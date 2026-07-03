@@ -3,627 +3,668 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaaS Reservas - Immersive Luxury Edition</title>
+    <title>SaaS Reservas - Luxury Control Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* Colores de Estado Estilo Neón Líquido */
-            --color-libre-grad: linear-gradient(135deg, rgba(16, 185, 129, 0.85) 0%, rgba(5, 150, 105, 0.9) 100%);
-            --color-libre-glow: rgba(16, 185, 129, 0.4);
-            
-            --color-ocupado-grad: linear-gradient(135deg, rgba(244, 63, 94, 0.85) 0%, rgba(225, 29, 72, 0.9) 100%);
-            --color-ocupado-glow: rgba(244, 63, 94, 0.4);
-            
-            --color-seleccionado-grad: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            --color-seleccionado-glow: rgba(59, 130, 246, 0.6);
+            --bg-gradient: linear-gradient(135deg, #0f111a 0%, #151926 100%);
+            --glass-bg: rgba(20, 24, 38, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --glass-glow: rgba(99, 102, 241, 0.05);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-primary: #6366f1;
+            --accent-hover: #4f46e5;
+            --status-free: #10b981;
+            --status-occupied: #ef4444;
+            --status-waiting: #f59e0b;
+        }
 
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
-            margin: 0;
-            padding: 0;
-            /* Fondo fotográfico inmersivo de restaurante 5 estrellas */
-            background: linear-gradient(rgba(10, 15, 30, 0.7), rgba(10, 15, 30, 0.9)), 
-                        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
+            background: #0b0d14;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(239, 68, 68, 0.08) 0px, transparent 50%),
+                url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
-            color: var(--text-light);
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box;
-            overflow-x: hidden;
-        }
-
-        /* PORTAL DE ACCESO PREMIUM */
-        .login-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            padding: 24px;
-            box-sizing: border-box;
-            transition: all 0.5s ease-in-out;
-        }
-
-        .login-card {
-            background: rgba(15, 23, 42, 0.45);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            padding: 48px 40px;
-            border-radius: 32px;
-            width: 100%;
-            max-width: 440px;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255,255,255,0.1);
-            text-align: center;
-            box-sizing: border-box;
-        }
-
-        .login-card .gold-tag {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: #fbbf24;
-            margin-bottom: 12px;
-            display: inline-block;
-            background: rgba(251, 191, 36, 0.1);
-            padding: 6px 16px;
-            border-radius: 50px;
-            border: 1px solid rgba(251, 191, 36, 0.2);
-        }
-
-        .login-card h1 {
-            margin: 0 0 8px 0;
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .login-card p {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin: 0 0 32px 0;
-            line-height: 1.5;
-        }
-
-        /* CONTENEDOR PRINCIPAL DEL PANEL (Oculto inicialmente) */
-        .app-container {
-            display: none; 
-            width: 100%;
-            max-width: 1440px;
             flex-direction: column;
-            gap: 24px;
-            padding: 24px;
-            box-sizing: border-box;
-            animation: fadeIn 0.6s ease-out forwards;
+            overflow: hidden;
         }
 
-        /* Encabezado de Cristal Esmerilado */
+        /* Top Header */
         header {
-            width: 100%;
+            background: rgba(11, 13, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(15, 23, 42, 0.45);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 22px 36px;
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            box-sizing: border-box;
+            z-index: 10;
         }
 
-        header h2 {
-            margin: 0;
-            font-size: 26px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.03em;
-        }
-
-        .main-layout {
+        .brand {
             display: flex;
-            gap: 24px;
-            width: 100%;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* Plano del Salón */
-        .salon-container {
-            flex: 2;
-            background: rgba(9, 13, 22, 0.65);
-            backdrop-filter: blur(8px);
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            background-size: 32px 32px;
-            border: 1px solid var(--glass-border);
-            border-radius: 28px;
-            height: 640px;
-            position: relative;
-            box-shadow: inset 0 4px 30px rgba(0,0,0,0.5), 0 20px 50px rgba(0,0,0,0.3);
+        .brand i {
+            font-size: 24px;
+            color: var(--accent-primary);
+            text-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* Main Workspace Layout */
+        .workspace {
+            display: grid;
+            grid-template-columns: 340px 1fr 360px;
+            height: calc(100vh - 61px);
             overflow: hidden;
         }
 
-        .arquitectura-label {
-            position: absolute;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 8px 22px;
-            font-size: 11px;
-            font-weight: 800;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        }
-
-        /* ICONO DE MESA INTERACTIVO */
-        .mesa {
-            width: 105px;
-            height: 105px;
-            position: absolute;
+        /* Sidebar Común Estilo Glassmorphism */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            cursor: move;
-            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s;
-            user-select: none;
-            z-index: 2;
+            overflow-hidden;
         }
 
-        .mesa-surface {
-            width: 76px;
-            height: 76px;
-            border-radius: 50%; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-weight: 800;
-            font-size: 13px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-            border: 2px solid rgba(255, 255, 255, 0.35);
+        /* COLUMNA IZQUIERDA: Timeline y Lista de Reservas */
+        #left-timeline {
+            border-right: 1px solid var(--glass-border);
+        }
+
+        .search-box {
+            padding: 16px;
+            border-bottom: 1px solid var(--glass-border);
             position: relative;
-            box-sizing: border-box;
         }
 
-        .mesa-surface::before {
-            content: '';
+        .search-box input {
+            width: 100%;
+            padding: 10px 14px 10px 36px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-box i {
             position: absolute;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px dashed rgba(255, 255, 255, 0.4);
-            pointer-events: none;
-            z-index: 1;
+            left: 28px;
+            top: 29px;
+            color: var(--text-muted);
+            font-size: 14px;
         }
 
-        .mesa.libre .mesa-surface {
-            background: var(--color-libre-grad);
-            box-shadow: 0 10px 25px -4px var(--color-libre-glow), inset 0 2px 6px rgba(255,255,255,0.4);
+        .timeline-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
-        .mesa.reservada .mesa-surface {
-            background: var(--color-ocupado-grad);
-            box-shadow: 0 10px 25px -4px var(--color-ocupado-glow), inset 0 2px 6px rgba(255,255,255,0.4);
-        }
-        .mesa.seleccionada .mesa-surface {
-            background: var(--color-seleccionado-grad);
-            box-shadow: 0 0 0 4px #ffffff, 0 15px 35px var(--color-seleccionado-glow);
-            border-color: transparent;
-        }
-        .mesa.seleccionada { transform: scale(1.08); z-index: 10; }
 
-        /* Sillas Físicas Alrededor de la Mesa */
-        .silla {
-            position: absolute;
-            width: 22px;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 4px 4px 2px 2px;
-            pointer-events: none;
-            backdrop-filter: blur(4px);
-        }
-        .silla.n { top: 2px; left: 41.5px; }
-        .silla.s { bottom: 2px; left: 41.5px; transform: rotate(180deg); }
-        .silla.e { right: 2px; top: 46.5px; width: 12px; height: 22px; border-radius: 2px 4px 4px 2px; }
-        .silla.w { left: 2px; top: 46.5px; width: 12px; height: 22px; border-radius: 4px 2px 2px 4px; }
-
-        .mesa:hover:not(.seleccionada) { transform: translateY(-4px); z-index: 5; }
-        .mesa:hover .mesa-surface { border-color: rgba(255,255,255,0.7); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
-
-        .mesa .detalle-reserva {
-            font-size: 9px;
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
             font-weight: 700;
-            background: rgba(0, 0, 0, 0.45);
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .res-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .res-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .res-card.active-card {
+            border-color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .res-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .res-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .res-time {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.15);
             padding: 2px 6px;
-            border-radius: 5px;
+            border-radius: 4px;
+        }
+
+        .res-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .res-meta span i {
+            margin-right: 4px;
+        }
+
+        .badge-status {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* COLUMNA CENTRAL: Control de Habitaciones y Canvas */
+        #center-canvas {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Tabs de Zonas / Habitaciones estilo EatApp */
+        .room-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 20px;
+        }
+
+        .room-tabs {
+            display: flex;
+            gap: 6px;
+        }
+
+        .room-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .room-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .room-btn.active-room {
+            color: white;
+            background: var(--accent-primary);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Canvas del Mapa de Mesas */
+        .floorplan-container {
+            flex: 1;
+            background: rgba(5, 7, 12, 0.4);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            background-image: 
+                radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .floorplan-canvas {
+            width: 800px;
+            height: 550px;
+            position: relative;
+        }
+
+        /* Mesas Mejoradas con Distintos Formatos y Tags de Clientes */
+        .table-element {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        }
+
+        /* Formatos Geométricos de Mesas */
+        .table-element.circle { border-radius: 50%; }
+        .table-element.square { border-radius: 12px; }
+
+        /* Estados de Mesas */
+        .table-element.free {
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-color: var(--status-free);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+        }
+
+        .table-element.occupied {
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0.05) 100%);
+            border-color: var(--status-occupied);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+        }
+
+        .table-element.selected {
+            border-color: white !important;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .table-id {
+            font-weight: 700;
+            font-size: 15px;
+            color: white;
+        }
+
+        .table-cap {
+            font-size: 11px;
+            color: var(--text-muted);
             margin-top: 2px;
-            max-width: 60px;
+        }
+
+        /* Mini Etiqueta de Cliente Flotante incorporada (Estilo EatApp) */
+        .table-client-tag {
+            position: absolute;
+            bottom: -22px;
+            background: rgba(11, 13, 20, 0.9);
+            border: 1px solid var(--glass-border);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            white-space: nowrap;
+            max-width: 90px;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
-            z-index: 2;
-            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            font-weight: 500;
         }
 
-        /* Panel Lateral */
-        .panel-control {
-            flex: 1;
-            background: rgba(15, 23, 42, 0.55);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 30px;
-            border-radius: 28px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        /* COLUMNA DERECHA: Detalle y Operaciones */
+        #right-details {
+            border-left: 1px solid var(--glass-border);
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 22px;
-            max-height: 640px;
+            gap: 20px;
             overflow-y: auto;
-            box-sizing: border-box;
         }
 
-        h3 { font-size: 16px; color: #ffffff; font-weight: 700; margin: 0; letter-spacing: -0.01em;}
-
-        /* Formulario e Inputs de Lujo */
-        .form-group { display: flex; flex-direction: column; gap: 8px; text-align: left; margin-bottom: 16px; }
-        .form-group label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
-
-        input {
-            padding: 14px 18px;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 14px;
-            font-size: 14px;
-            color: #ffffff;
-            background-color: rgba(15, 23, 42, 0.6);
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-            width: 100%;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            background-color: rgba(15, 23, 42, 0.85);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
-        }
-
-        /* Botones Especiales */
-        button {
-            width: 100%;
-            background: #ffffff;
-            color: #0f172a;
-            border: none;
-            padding: 15px 20px;
-            border-radius: 14px;
-            cursor: pointer;
+        .panel-heading {
+            font-size: 16px;
             font-weight: 700;
-            font-size: 14px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        button:hover { background: #f8fafc; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.15); }
-        button.btn-login { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; margin-top: 12px; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3); }
-        button.btn-login:hover { box-shadow: 0 8px 30px rgba(59, 130, 246, 0.5); }
-        button.btn-unir { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; width: auto; }
-        button.btn-unir:hover { box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4); }
-        button.btn-save { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; width: auto; }
-        button.btn-save:hover { box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
 
-        .leyenda { display: flex; gap: 20px; }
-        .leyenda-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #cbd5e1; }
-        .cuadro { width: 10px; height: 10px; border-radius: 50%; }
-        
-        hr { border: 0; border-top: 1px solid var(--glass-border); margin: 4px 0; }
-        .panel-control::-webkit-scrollbar { width: 6px; }
-        .panel-control::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+        .form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+        .form-group input, .form-group select {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: white;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* Botón Premium */
+        .btn-action {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-action:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+        }
+
+        /* Legend Indicators */
+        .status-legends {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="login-wrapper" id="login-screen">
-        <div class="login-card">
-            <div class="gold-tag">Concierge OS v2.0</div>
-            <h1>Bienvenido</h1>
-            <p>Introduce las credenciales de tu establecimiento para acceder al control maestro de reservas.</p>
-            
-            <div class="form-group">
-                <label>Identificador del Restaurante</label>
-                <input type="number" id="login-id-restaurante" value="1" placeholder="Ej. 1">
-            </div>
-            
-            <div class="form-group">
-                <label>Código de Acceso Corporativo</label>
-                <input type="password" id="login-password" placeholder="••••••••">
-            </div>
-            
-            <button class="btn-login" onclick="autenticarYEntrar()">Acceder al Sistema</button>
+    <header>
+        <div class="brand">
+            <i class="fa-solid degradado fa-couch"></i>
+            <h1>Voxaly Luxury Booking</h1>
         </div>
-    </div>
+        <div class="status-legends">
+            <div class="legend-item"><div class="legend-dot" style="background: var(--status-free)"></div>Disponibles</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--status-occupied)"></div>Ocupadas</div>
+        </div>
+    </header>
 
-    <div class="app-container" id="app-screen">
-        <header>
-            <h2 id="restaurante-nombre">Mi Restaurante</h2>
-            <div class="leyenda">
-                <div class="leyenda-item"><div class="cuadro" style="background: #10b981; box-shadow: 0 0 12px #10b981;"></div> Disponibles</div>
-                <div class="leyenda-item"><div class="cuadro" style="background: #f43f5e; box-shadow: 0 0 12px #f43f5e;"></div> Ocupadas</div>
+    <div class="workspace">
+        
+        <div id="left-timeline" class="glass-panel">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Buscar cliente o mesa...">
             </div>
-        </header>
-
-        <div class="main-layout">
-            <div class="salon-container" id="salon">
-                <div class="arquitectura-label" style="bottom: 20px; left: 42%;">Entrada Principal</div>
-                <div class="arquitectura-label" style="top: 20px; right: 20px; color: #f43f5e; background: rgba(244, 63, 94, 0.15); border-color: rgba(244, 63, 94, 0.3);">Cocina Central</div>
-            </div>
-
-            <div class="panel-control">
-                <h3>Acción Multimesa</h3>
-                <button class="btn-unir" onclick="unirMesasSeleccionadas()">Combinar Espacios</button>
-                <p style="margin: -4px 0 0 0; font-size: 12px; color: #94a3b8;">Mantén presionado Ctrl / Cmd y haz clic en dos mesas.</p>
-                
-                <hr>
-
-                <h3>Detalle de Gestión</h3>
-                <div id="form-mesa-detalle">
-                    <p style="color: #94a3b8; margin:0; font-size: 14px; line-height: 1.6;">Haz clic sobre el icono de una mesa en el salón interactivo para modificar reservas en tiempo real.</p>
+            
+            <div class="timeline-section">
+                <div>
+                    <div class="section-title">En Comedor (Sentados) <span>2</span></div>
+                    <div class="res-card active-card" onclick="selectMockReservation('Mesa 1', 'Alexander Mendez', 4, '20:00')">
+                        <div class="res-header">
+                            <div class="res-name">Alexander Mendez</div>
+                            <div class="res-time">M1</div>
+                        </div>
+                        <div class="res-meta">
+                            <span><i class="fa-solid fa-users"></i> 4 Pax</span>
+                            <span><i class="fa-regular fa-clock"></i> 20:00</span>
+                        </div>
+                        <div class="badge-status" style="background: var(--status-occupied)"></div>
+                    </div>
                 </div>
-                
-                <hr>
-                
-                <h3>Estructura del Plano</h3>
-                <div class="form-group" style="margin-bottom:0;">
-                    <label>Identificador Numérico</label>
-                    <input type="number" id="nuevo-num-mesa" placeholder="Ej. 6">
-                    <button style="margin-top:10px; width:100%;" onclick="agregarMesaAlServidor()">+ Crear Nueva Mesa</button>
+
+                <div>
+                    <div class="section-title">Próximas Reservas <span>2</span></div>
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <div class="res-card" onclick="selectMockReservation('Mesa 3', 'Carlos Villa', 2, '21:30')">
+                            <div class="res-header">
+                                <div class="res-name">Carlos Villa</div>
+                                <div class="res-time">M3</div>
+                            </div>
+                            <div class="res-meta">
+                                <span><i class="fa-solid fa-users"></i> 2 Pax</span>
+                                <span><i class="fa-regular fa-clock"></i> 21:30</span>
+                            </div>
+                            <div class="badge-status" style="background: var(--status-free)"></div>
+                        </div>
+                        
+                        <div class="res-card" onclick="selectMockReservation('Mesa 4', 'Dra. Almonte', 6, '22:00')">
+                            <div class="res-header">
+                                <div class="res-name">Dra. Almonte</div>
+                                <div class="res-time">M4</div>
+                            </div>
+                            <div class="res-meta">
+                                <span><i class="fa-solid fa-users"></i> 6 Pax</span>
+                                <span><i class="fa-regular fa-clock"></i> 22:00</span>
+                            </div>
+                            <div class="badge-status" style="background: var(--status-occupied)"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div id="center-canvas">
+            <div class="room-navbar">
+                <div class="room-tabs">
+                    <button class="room-btn active-room">Salón Principal</button>
+                    <button class="room-btn">La Terraza</button>
+                    <button class="room-btn">Zona VIP</button>
+                </div>
+                <button class="room-btn btn-secondary" style="padding: 6px 12px;"><i class="fa-solid fa-layer-group"></i> Configurar</button>
+            </div>
+
+            <div class="floorplan-container">
+                <div class="floorplan-canvas">
+                    <div class="table-element circle occupied selected" style="width: 90px; height: 90px; left: 100px; top: 120px;" onclick="clickedTable(this, 'Mesa 1', 4, 'Alexander Mendez')">
+                        <span class="table-id">M1</span>
+                        <span class="table-cap">4 Pax</span>
+                        <div class="table-client-tag">A. Mendez</div>
+                    </div>
+
+                    <div class="table-element circle free" style="width: 90px; height: 90px; left: 260px; top: 120px;" onclick="clickedTable(this, 'Mesa 2', 4, '')">
+                        <span class="table-id">M2</span>
+                        <span class="table-cap">4 Pax</span>
+                    </div>
+
+                    <div class="table-element circle free" style="width: 90px; height: 90px; left: 420px; top: 120px;" onclick="clickedTable(this, 'Mesa 3', 4, '')">
+                        <span class="table-id">M3</span>
+                        <span class="table-cap">4 Pax</span>
+                    </div>
+
+                    <div class="table-element square occupied" style="width: 100px; height: 90px; left: 100px; top: 320px;" onclick="clickedTable(this, 'Mesa 4', 6, 'Dra. Almonte')">
+                        <span class="table-id">M4</span>
+                        <span class="table-cap">6 Pax</span>
+                        <div class="table-client-tag">Dra. Almonte</div>
+                    </div>
+
+                    <div class="table-element square free" style="width: 100px; height: 90px; left: 250px; top: 320px;" onclick="clickedTable(this, 'Mesa 5', 4, '')">
+                        <span class="table-id">M5</span>
+                        <span class="table-cap">4 Pax</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="right-details" class="glass-panel">
+            <div class="panel-heading">
+                <span id="detail-title">Mesa 1 Seleccionada</span>
+                <i class="fa-solid fa-ellipsis-vertical" style="color: var(--text-muted); cursor:pointer;"></i>
+            </div>
+
+            <div class="form-group">
+                <label>Estado de Ocupación</label>
+                <select id="form-status" onchange="updateCurrentTableStatus()">
+                    <option value="occupied">Ocupada / Reservada</option>
+                    <option value="free">Disponible / Libre</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Nombre del Cliente</label>
+                <input type="text" id="form-name" value="Alexander Mendez" placeholder="Ingresa el cliente...">
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Comensales (Pax)</label>
+                    <input type="number" id="form-pax" value="4">
+                </div>
+                <div class="form-group">
+                    <label>Hora de Llegada</label>
+                    <input type="time" id="form-time" value="20:00">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: auto;">
+                <button class="btn-action" onclick="saveTableChanges()"><i class="fa-regular fa-floppy-disk"></i> Actualizar Plano</button>
+                <button class="btn-action btn-secondary" onclick="alert('Espacio combinado correctamente')"><i class="fa-solid fa-arrows-spin"></i> Combinar Espacios</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxw7cQocyJDPxmjLVoHNGZMqnt3lHMHg2gkucfM4tLY8WMC-yFCINLBPtlXFoZjSERB/exec";
-        
-        let idRestauranteLogueado = 1; 
-        let mesas = [];
-        let mesasSeleccionadas = [];
+        let currentSelectedElement = document.querySelector('.table-element.selected');
 
-        // FUNCIÓN DE AUTENTICACIÓN Y TRANSICIÓN DE PANTALLA
-        function autenticarYEntrar() {
-            const inputId = document.getElementById('login-id-restaurante').value;
-            if(!inputId) return alert("Por favor ingresa un ID válido.");
-            
-            idRestauranteLogueado = inputId;
-            
-            // Animación de salida y cambio de pantallas
-            const loginScreen = document.getElementById('login-screen');
-            const appScreen = document.getElementById('app-screen');
-            
-            loginScreen.style.opacity = '0';
-            setTimeout(() => {
-                loginScreen.style.display = 'none';
-                document.body.style.alignItems = 'flex-start'; // Ajuste de layout para el panel
-                appScreen.style.display = 'flex';
-                cargarDatosDelServidor();
-            }, 400);
-        }
+        function clickedTable(element, id, pax, client) {
+            if(currentSelectedElement) {
+                currentSelectedElement.classList.remove('selected');
+            }
+            element.classList.add('selected');
+            currentSelectedElement = element;
 
-        async function cargarDatosDelServidor() {
-            try {
-                let response = await fetch(`${API_URL}?action=getData&id_restaurante=${idRestauranteLogueado}`);
-                let datos = await response.json();
-                
-                // Actualiza dinámicamente el título del restaurante desde la BD
-                if (datos.restaurante && datos.restaurante.nombre) {
-                    document.getElementById('restaurante-nombre').innerText = datos.restaurante.nombre;
-                }
-
-                mesas = datos.mesas.map(m => {
-                    let reserva = datos.reservas.find(r => r.numero_mesa == m.numero);
-                    return {
-                        id: m.id,
-                        numero: m.numero,
-                        x: m.x,
-                        y: m.y,
-                        unidaA: m.unidaA,
-                        estado: (reserva && reserva.estado) ? reserva.estado : 'libre',
-                        cliente: reserva ? reserva.cliente : '',
-                        fecha: reserva ? reserva.fecha : '',
-                        hora: reserva ? reserva.hora : ''
-                    }
-                });
-                renderizarSalon();
-            } catch (err) {
-                console.log("Error de sincronización con Apps Script.");
+            document.getElementById('detail-title').innerText = `${id} Seleccionada`;
+            document.getElementById('form-name').value = client;
+            document.getElementById('form-pax').value = pax;
+            
+            if(element.classList.contains('occupied')) {
+                document.getElementById('form-status').value = 'occupied';
+            } else {
+                document.getElementById('form-status').value = 'free';
             }
         }
 
-        function renderizarSalon() {
-            document.querySelectorAll('.mesa').forEach(el => el.remove());
-            const salon = document.getElementById('salon');
-
-            mesas.forEach(mesa => {
-                const divMesaContenedor = document.createElement('div');
-                divMesaContenedor.className = `mesa ${mesa.estado}`;
-                if (mesasSeleccionadas.includes(mesa.id)) divMesaContenedor.classList.add('seleccionada');
-                
-                divMesaContenedor.style.left = `${mesa.x}px`;
-                divMesaContenedor.style.top = `${mesa.y}px`;
-                
-                divMesaContenedor.innerHTML = `
-                    <div class="silla n"></div>
-                    <div class="silla s"></div>
-                    <div class="silla e"></div>
-                    <div class="silla w"></div>
-                    <div class="mesa-surface">
-                        M${mesa.numero}
-                        ${mesa.unidaA ? `<span class="detalle-reserva">M${mesa.unidaA}</span>` : ''}
-                        ${(mesa.estado === 'reservada' && mesa.cliente) ? `<span class="detalle-reserva">${mesa.cliente.split(' ')[0]}</span>` : ''}
-                    </div>
-                `;
-
-                divMesaContenedor.onclick = (e) => gestionarClicks(mesa.id, e);
-                hacerArrastrable(divMesaContenedor, mesa);
-
-                salon.appendChild(divMesaContenedor);
+        function selectMockReservation(tableId, name, pax, time) {
+            const elements = document.querySelectorAll('.table-element');
+            elements.forEach(el => {
+                if(el.querySelector('.table-id').innerText === tableId.replace('Mesa ', 'M')) {
+                    clickedTable(el, tableId, pax, name);
+                    document.getElementById('form-time').value = time;
+                }
             });
         }
 
-        function gestionarClicks(id, event) {
-            if (event.ctrlKey || event.shiftKey) {
-                const index = mesasSeleccionadas.indexOf(id);
-                if (index > -1) mesasSeleccionadas.splice(index, 1);
-                else mesasSeleccionadas.push(id);
+        function saveTableChanges() {
+            if(!currentSelectedElement) return;
+            
+            const nameInput = document.getElementById('form-name').value;
+            const paxInput = document.getElementById('form-pax').value;
+            const statusInput = document.getElementById('form-status').value;
+
+            currentSelectedElement.querySelector('.table-cap').innerText = `${paxInput} Pax`;
+
+            let tag = currentSelectedElement.querySelector('.table-client-tag');
+            
+            if(statusInput === 'occupied') {
+                currentSelectedElement.classList.remove('free');
+                currentSelectedElement.classList.add('occupied');
+                if(nameInput) {
+                    if(!tag) {
+                        tag = document.createElement('div');
+                        tag.className = 'table-client-tag';
+                        currentSelectedElement.appendChild(tag);
+                    }
+                    tag.innerText = nameInput;
+                }
             } else {
-                mesasSeleccionadas = [id];
-                mostrarDetalleMesa(id);
-            }
-            renderizarSalon();
-        }
-
-        function mostrarDetalleMesa(id) {
-            const mesa = mesas.find(m => m.id === id);
-            const contenedor = document.getElementById('form-mesa-detalle');
-            
-            contenedor.innerHTML = `
-                <div class="form-group">
-                    <label>Número Identificador</label>
-                    <input type="text" id="edit-num-mesa" value="${mesa.numero}">
-                </div>
-                <div class="form-group">
-                    <label>Titular de la Reserva</label>
-                    <input type="text" id="reserva-cliente" value="${mesa.cliente}" placeholder="Nombre del huésped">
-                </div>
-                <div class="form-group">
-                    <label>Fecha Asignada</label>
-                    <input type="date" id="reserva-fecha" value="${mesa.fecha}">
-                </div>
-                <div class="form-group">
-                    <label>Horario</label>
-                    <input type="time" id="reserva-hora" value="${mesa.hora}">
-                </div>
-                <div style="display:flex; gap:10px; margin-top:14px;">
-                    <button class="btn-save" onclick="guardarMesaReserva(${mesa.id})">Confirmar</button>
-                    <button style="background:rgba(244,63,94,0.15); color:#f43f5e; border:1px solid rgba(244,63,94,0.3);" onclick="liberarMesaReserva(${mesa.id})">Liberar</button>
-                </div>
-            `;
-        }
-
-        async function guardarMesaReserva(id) {
-            const cliente = document.getElementById('reserva-cliente').value;
-            const numMesa = document.getElementById('edit-num-mesa').value;
-            
-            let datos = {
-                action: "saveMesaReserva",
-                id_restaurante: idRestauranteLogueado,
-                numero_mesa: numMesa,
-                cliente: cliente,
-                fecha: document.getElementById('reserva-fecha').value,
-                hora: document.getElementById('reserva-hora').value,
-                estado: cliente.trim() !== "" ? 'reservada' : 'libre'
-            };
-
-            let response = await fetch(API_URL, { method: "POST", body: JSON.stringify(datos) });
-            let res = await response.json();
-            if(res.success) {
-                mesasSeleccionadas = [];
-                cargarDatosDelServidor();
-            }
-        }
-
-        async function liberarMesaReserva(id) {
-            const mesa = mesas.find(m => m.id === id);
-            let datos = {
-                action: "saveMesaReserva",
-                id_restaurante: idRestauranteLogueado,
-                numero_mesa: mesa.numero,
-                cliente: "", fecha: "", hora: "", estado: "libre"
-            };
-            let response = await fetch(API_URL, { method: "POST", body: JSON.stringify(datos) });
-            let res = await response.json();
-            if(res.success) {
-                mesasSeleccionadas = [];
-                cargarDatosDelServidor();
-            }
-        }
-
-        function unirMesasSeleccionadas() {
-            if (mesasSeleccionadas.length !== 2) return alert("Selecciona 2 mesas usando Ctrl + Clic.");
-            alert("Estrategia de unión configurada.");
-        }
-
-        async function agregarMesaAlServidor() {
-            const num = document.getElementById('nuevo-num-mesa').value;
-            if(!num) return;
-
-            let datos = { action: "addMesa", id_restaurante: idRestauranteLogueado, numero: num };
-            let response = await fetch(API_URL, { method: "POST", body: JSON.stringify(datos) });
-            let res = await response.json();
-            if(res.success) {
-                document.getElementById('nuevo-num-mesa').value = "";
-                cargarDatosDelServidor();
-            }
-        }
-
-        function hacerArrastrable(elmnt, mesaObj) {
-            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            elmnt.onmousedown = dragMouseDown;
-
-            function dragMouseDown(e) {
-                if (e.target.closest('.mesa-surface') === null && e.target !== elmnt) return;
-                e.preventDefault();
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                document.onmouseup = closeDragElement;
-                document.onmousemove = elementDrag;
+                currentSelectedElement.classList.remove('occupied');
+                currentSelectedElement.classList.add('free');
+                if(tag) tag.remove();
             }
 
-            function elementDrag(e) {
-                e.preventDefault();
-                pos1 = pos3 - e.clientX;
-                pos2 = pos4 - e.clientY;
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                
-                let nuevoX = elmnt.offsetLeft - pos1;
-                let nuevoY = elmnt.offsetTop - pos2;
-
-                if(nuevoX >= 0 && nuevoX <= 740) elmnt.style.left = nuevoX + "px";
-                if(nuevoY >= 0 && nuevoY <= 520) elmnt.style.top = nuevoY + "px";
-                
-                mesaObj.x = nuevoX;
-                mesaObj.y = nuevoY;
-            }
-
-            function closeDragElement() {
-                document.onmouseup = null;
-                document.onmousemove = null;
-            }
+            alert("Plano de mesas actualizado con éxito de forma local.");
         }
     </script>
 </body>
