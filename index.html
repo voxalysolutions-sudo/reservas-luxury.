@@ -9,16 +9,15 @@
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #0f111a 0%, #151926 100%);
-            --glass-bg: rgba(20, 24, 38, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.07);
-            --glass-glow: rgba(99, 102, 241, 0.05);
+            --glass-bg: rgba(20, 24, 38, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
             --accent-primary: #6366f1;
             --accent-hover: #4f46e5;
             --status-free: #10b981;
             --status-occupied: #ef4444;
-            --status-waiting: #f59e0b;
+            --status-reserved: #f59e0b;
         }
 
         * {
@@ -26,15 +25,11 @@
             margin: 0;
             padding: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-font-smoothing: antialiased;
         }
 
         body {
             background: #0b0d14;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(239, 68, 68, 0.08) 0px, transparent 50%),
-                url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1920&q=80');
+            background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -45,12 +40,12 @@
             overflow: hidden;
         }
 
-        /* Top Header */
+        /* Top Header Restaurado con Acceso y Opciones */
         header {
-            background: rgba(11, 13, 20, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(11, 13, 20, 0.85);
+            backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--glass-border);
-            padding: 12px 24px;
+            padding: 14px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -64,41 +59,59 @@
         }
 
         .brand i {
-            font-size: 24px;
+            font-size: 22px;
             color: var(--accent-primary);
-            text-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
         }
 
-        .brand h1 {
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+        .header-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
         }
 
-        /* Main Workspace Layout */
+        .header-menu a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .header-menu a:hover, .header-menu a.active {
+            color: white;
+        }
+
+        .btn-access {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--glass-border);
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Main Layout Workspace */
         .workspace {
             display: grid;
             grid-template-columns: 340px 1fr 360px;
-            height: calc(100vh - 61px);
+            height: calc(100vh - 67px);
             overflow: hidden;
         }
 
-        /* Sidebar Común Estilo Glassmorphism */
         .glass-panel {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             display: flex;
             flex-direction: column;
-            overflow-hidden;
+            overflow: hidden;
         }
 
-        /* COLUMNA IZQUIERDA: Timeline y Lista de Reservas */
-        #left-timeline {
-            border-right: 1px solid var(--glass-border);
-        }
+        /* COLUMNA IZQUIERDA */
+        #left-timeline { border-right: 1px solid var(--glass-border); }
 
         .search-box {
             padding: 16px;
@@ -109,18 +122,11 @@
         .search-box input {
             width: 100%;
             padding: 10px 14px 10px 36px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--glass-border);
             border-radius: 8px;
             color: white;
             font-size: 13px;
-            transition: all 0.3s;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
         }
 
         .search-box i {
@@ -128,7 +134,6 @@
             left: 28px;
             top: 29px;
             color: var(--text-muted);
-            font-size: 14px;
         }
 
         .timeline-section {
@@ -137,39 +142,39 @@
             padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
         }
 
         .section-title {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--text-muted);
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
         }
 
         .res-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 10px;
             padding: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
             position: relative;
+            margin-bottom: 8px;
+            transition: transform 0.2s;
         }
 
         .res-card:hover {
-            background: rgba(255, 255, 255, 0.07);
-            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             transform: translateY(-1px);
         }
 
         .res-card.active-card {
             border-color: var(--accent-primary);
-            background: rgba(99, 102, 241, 0.1);
+            background: rgba(99, 102, 241, 0.08);
         }
 
         .res-header {
@@ -179,41 +184,19 @@
             margin-bottom: 6px;
         }
 
-        .res-name {
-            font-weight: 600;
-            font-size: 14px;
-        }
-
+        .res-name { font-weight: 600; font-size: 14px; }
         .res-time {
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             color: var(--accent-primary);
             background: rgba(99, 102, 241, 0.15);
             padding: 2px 6px;
             border-radius: 4px;
         }
 
-        .res-meta {
-            display: flex;
-            gap: 12px;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
+        .res-meta { display: flex; gap: 12px; font-size: 12px; color: var(--text-muted); }
 
-        .res-meta span i {
-            margin-right: 4px;
-        }
-
-        .badge-status {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        /* COLUMNA CENTRAL: Control de Habitaciones y Canvas */
+        /* COLUMNA CENTRAL: Plano de Distribución */
         #center-canvas {
             display: flex;
             flex-direction: column;
@@ -221,23 +204,18 @@
             overflow: hidden;
         }
 
-        /* Tabs de Zonas / Habitaciones estilo EatApp */
         .room-navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             padding: 6px;
             border-radius: 10px;
             border: 1px solid var(--glass-border);
             margin-bottom: 20px;
         }
 
-        .room-tabs {
-            display: flex;
-            gap: 6px;
-        }
-
+        .room-tabs { display: flex; gap: 6px; }
         .room-btn {
             background: transparent;
             border: none;
@@ -247,43 +225,29 @@
             font-weight: 600;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .room-btn:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.05);
         }
 
         .room-btn.active-room {
             color: white;
             background: var(--accent-primary);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
-        /* Canvas del Mapa de Mesas */
         .floorplan-container {
             flex: 1;
-            background: rgba(5, 7, 12, 0.4);
+            background: rgba(5, 7, 12, 0.5);
             border-radius: 16px;
             border: 1px solid var(--glass-border);
             position: relative;
-            background-image: 
-                radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
             background-size: 24px 24px;
-            overflow: auto;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .floorplan-canvas {
-            width: 800px;
-            height: 550px;
-            position: relative;
-        }
+        .floorplan-canvas { width: 800px; height: 550px; position: relative; }
 
-        /* Mesas Mejoradas con Distintos Formatos y Tags de Clientes */
+        /* ESTRUCTURA MESA GEOMÉTRICA ORIGINAL MEJORADA */
         .table-element {
             position: absolute;
             display: flex;
@@ -291,118 +255,78 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            user-select: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s ease;
             border: 2px solid transparent;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
         }
 
-        /* Formatos Geométricos de Mesas */
         .table-element.circle { border-radius: 50%; }
         .table-element.square { border-radius: 12px; }
 
-        /* Estados de Mesas */
+        /* Estados Dinámicos de Colores Básicos y Reservados */
         .table-element.free {
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.05) 100%);
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.04) 100%);
             border-color: var(--status-free);
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
         }
 
         .table-element.occupied {
-            background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0.05) 100%);
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.04) 100%);
             border-color: var(--status-occupied);
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+        }
+
+        .table-element.reserved {
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.04) 100%);
+            border-color: var(--status-reserved);
         }
 
         .table-element.selected {
-            border-color: white !important;
+            border-color: #ffffff !important;
             transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 0 20px rgba(255,255,255,0.25);
         }
 
-        .table-id {
-            font-weight: 700;
-            font-size: 15px;
-            color: white;
+        /* Línea de Enlace Visual para Combinaciones */
+        .table-link-bridge {
+            position: absolute;
+            background: rgba(99, 102, 241, 0.3);
+            border: 1px dashed var(--accent-primary);
+            z-index: 1;
+            pointer-events: none;
+            transform-origin: top left;
         }
 
-        .table-cap {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        /* Mini Etiqueta de Cliente Flotante incorporada (Estilo EatApp) */
+        .table-id { font-weight: 700; font-size: 15px; color: white; z-index: 2; }
+        .table-cap { font-size: 11px; color: var(--text-muted); margin-top: 2px; z-index: 2; }
+        
         .table-client-tag {
             position: absolute;
             bottom: -22px;
-            background: rgba(11, 13, 20, 0.9);
+            background: rgba(11, 13, 20, 0.95);
             border: 1px solid var(--glass-border);
             padding: 2px 8px;
             border-radius: 20px;
             font-size: 10px;
-            white-space: nowrap;
-            max-width: 90px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-            font-weight: 500;
-        }
-
-        /* COLUMNA DERECHA: Detalle y Operaciones */
-        #right-details {
-            border-left: 1px solid var(--glass-border);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            overflow-y: auto;
-        }
-
-        .panel-heading {
-            font-size: 16px;
-            font-weight: 700;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            font-size: 12px;
             font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
+        /* COLUMNA DERECHA */
+        #right-details { border-left: 1px solid var(--glass-border); padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        .panel-heading { font-size: 16px; font-weight: 700; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+        
         .form-group input, .form-group select {
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--glass-border);
             border-radius: 8px;
             padding: 10px 12px;
             color: white;
             font-size: 13px;
-            transition: all 0.3s;
         }
 
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        /* Botón Premium */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        
         .btn-action {
             background: var(--accent-primary);
             color: white;
@@ -410,50 +334,22 @@
             border-radius: 8px;
             padding: 12px;
             font-weight: 600;
-            font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
         }
 
-        .btn-action:hover {
-            background: var(--accent-hover);
-            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
-        }
+        .btn-action:hover { background: var(--accent-hover); }
+        .btn-secondary { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+        .btn-merge-active { background: #ef4444 !important; animation: pulse 1.5s infinite; }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            box-shadow: none;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: none;
-        }
-
-        /* Legend Indicators */
-        .status-legends {
-            display: flex;
-            gap: 12px;
-            font-size: 12px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--text-muted);
-        }
-
-        .legend-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
         }
     </style>
 </head>
@@ -461,211 +357,281 @@
 
     <header>
         <div class="brand">
-            <i class="fa-solid degradado fa-couch"></i>
-            <h1>Voxaly Luxury Booking</h1>
+            <i class="fa-solid fa-couch"></i>
+            <h1>Voxaly Luxury Control</h1>
         </div>
-        <div class="status-legends">
-            <div class="legend-item"><div class="legend-dot" style="background: var(--status-free)"></div>Disponibles</div>
-            <div class="legend-item"><div class="legend-dot" style="background: var(--status-occupied)"></div>Ocupadas</div>
+        <div class="header-menu">
+            <a href="#" class="active">Panel</a>
+            <a href="#">Clientes</a>
+            <a href="#">Reportes</a>
+            <button class="btn-access">Acceso Administrativo</button>
         </div>
     </header>
 
     <div class="workspace">
         
+        <!-- Timeline Izquierda -->
         <div id="left-timeline" class="glass-panel">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Buscar cliente o mesa...">
+                <input type="text" placeholder="Filtrar flujo de reservas...">
             </div>
-            
             <div class="timeline-section">
                 <div>
-                    <div class="section-title">En Comedor (Sentados) <span>2</span></div>
-                    <div class="res-card active-card" onclick="selectMockReservation('Mesa 1', 'Alexander Mendez', 4, '20:00')">
-                        <div class="res-header">
-                            <div class="res-name">Alexander Mendez</div>
-                            <div class="res-time">M1</div>
-                        </div>
-                        <div class="res-meta">
-                            <span><i class="fa-solid fa-users"></i> 4 Pax</span>
-                            <span><i class="fa-regular fa-clock"></i> 20:00</span>
-                        </div>
-                        <div class="badge-status" style="background: var(--status-occupied)"></div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="section-title">Próximas Reservas <span>2</span></div>
-                    <div style="display:flex; flex-direction:column; gap:8px;">
-                        <div class="res-card" onclick="selectMockReservation('Mesa 3', 'Carlos Villa', 2, '21:30')">
-                            <div class="res-header">
-                                <div class="res-name">Carlos Villa</div>
-                                <div class="res-time">M3</div>
-                            </div>
-                            <div class="res-meta">
-                                <span><i class="fa-solid fa-users"></i> 2 Pax</span>
-                                <span><i class="fa-regular fa-clock"></i> 21:30</span>
-                            </div>
-                            <div class="badge-status" style="background: var(--status-free)"></div>
-                        </div>
-                        
-                        <div class="res-card" onclick="selectMockReservation('Mesa 4', 'Dra. Almonte', 6, '22:00')">
-                            <div class="res-header">
-                                <div class="res-name">Dra. Almonte</div>
-                                <div class="res-time">M4</div>
-                            </div>
-                            <div class="res-meta">
-                                <span><i class="fa-solid fa-users"></i> 6 Pax</span>
-                                <span><i class="fa-regular fa-clock"></i> 22:00</span>
-                            </div>
-                            <div class="badge-status" style="background: var(--status-occupied)"></div>
-                        </div>
+                    <div class="section-title">Ocupadas Actualmente</div>
+                    <div id="timeline-list">
+                        <!-- Renderizado Dinámico -->
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Escenario Central -->
         <div id="center-canvas">
             <div class="room-navbar">
                 <div class="room-tabs">
                     <button class="room-btn active-room">Salón Principal</button>
                     <button class="room-btn">La Terraza</button>
-                    <button class="room-btn">Zona VIP</button>
                 </div>
-                <button class="room-btn btn-secondary" style="padding: 6px 12px;"><i class="fa-solid fa-layer-group"></i> Configurar</button>
+                <div style="font-size: 13px; color: var(--text-muted);"><i class="fa-regular fa-clock"></i> Live Synced</div>
             </div>
 
             <div class="floorplan-container">
-                <div class="floorplan-canvas">
-                    <div class="table-element circle occupied selected" style="width: 90px; height: 90px; left: 100px; top: 120px;" onclick="clickedTable(this, 'Mesa 1', 4, 'Alexander Mendez')">
+                <div class="floorplan-canvas" id="canvas-container">
+                    
+                    <!-- Mesa 1 -->
+                    <div id="table-M1" class="table-element circle occupied selected" style="width: 95px; height: 95px; left: 120px; top: 100px;" data-id="M1" data-pax="4" data-client="Alexander Mendez" data-status="occupied">
                         <span class="table-id">M1</span>
                         <span class="table-cap">4 Pax</span>
                         <div class="table-client-tag">A. Mendez</div>
                     </div>
 
-                    <div class="table-element circle free" style="width: 90px; height: 90px; left: 260px; top: 120px;" onclick="clickedTable(this, 'Mesa 2', 4, '')">
+                    <!-- Mesa 2 -->
+                    <div id="table-M2" class="table-element circle free" style="width: 95px; height: 95px; left: 300px; top: 100px;" data-id="M2" data-pax="4" data-client="" data-status="free">
                         <span class="table-id">M2</span>
                         <span class="table-cap">4 Pax</span>
                     </div>
 
-                    <div class="table-element circle free" style="width: 90px; height: 90px; left: 420px; top: 120px;" onclick="clickedTable(this, 'Mesa 3', 4, '')">
+                    <!-- Mesa 3 -->
+                    <div id="table-M3" class="table-element square reserved" style="width: 95px; height: 95px; left: 480px; top: 100px;" data-id="M3" data-pax="2" data-client="Carlos Villa" data-status="reserved">
                         <span class="table-id">M3</span>
-                        <span class="table-cap">4 Pax</span>
+                        <span class="table-cap">2 Pax</span>
+                        <div class="table-client-tag">C. Villa</div>
                     </div>
 
-                    <div class="table-element square occupied" style="width: 100px; height: 90px; left: 100px; top: 320px;" onclick="clickedTable(this, 'Mesa 4', 6, 'Dra. Almonte')">
+                    <!-- Mesa 4 -->
+                    <div id="table-M4" class="table-element square free" style="width: 100px; height: 95px; left: 120px; top: 300px;" data-id="M4" data-pax="6" data-client="" data-status="free">
                         <span class="table-id">M4</span>
                         <span class="table-cap">6 Pax</span>
-                        <div class="table-client-tag">Dra. Almonte</div>
                     </div>
 
-                    <div class="table-element square free" style="width: 100px; height: 90px; left: 250px; top: 320px;" onclick="clickedTable(this, 'Mesa 5', 4, '')">
-                        <span class="table-id">M5</span>
-                        <span class="table-cap">4 Pax</span>
-                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- Control Derecho -->
         <div id="right-details" class="glass-panel">
-            <div class="panel-heading">
-                <span id="detail-title">Mesa 1 Seleccionada</span>
-                <i class="fa-solid fa-ellipsis-vertical" style="color: var(--text-muted); cursor:pointer;"></i>
-            </div>
+            <div class="panel-heading" id="detail-title">Mesa M1 Seleccionada</div>
 
             <div class="form-group">
-                <label>Estado de Ocupación</label>
-                <select id="form-status" onchange="updateCurrentTableStatus()">
-                    <option value="occupied">Ocupada / Reservada</option>
-                    <option value="free">Disponible / Libre</option>
+                <label>Estado del Espacio</label>
+                <select id="form-status" onchange="applyImmediateColorChange()">
+                    <option value="free">🟢 Disponible / Libre</option>
+                    <option value="occupied">🔴 Ocupada en Comedor</option>
+                    <option value="reserved">🟡 Reservada</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Nombre del Cliente</label>
-                <input type="text" id="form-name" value="Alexander Mendez" placeholder="Ingresa el cliente...">
+                <label>Titular de Reserva</label>
+                <input type="text" id="form-name" placeholder="Nombre completo">
             </div>
 
             <div class="grid-2">
                 <div class="form-group">
-                    <label>Comensales (Pax)</label>
-                    <input type="number" id="form-pax" value="4">
+                    <label>Comensales</label>
+                    <input type="number" id="form-pax">
                 </div>
                 <div class="form-group">
-                    <label>Hora de Llegada</label>
+                    <label>Hora</label>
                     <input type="time" id="form-time" value="20:00">
                 </div>
             </div>
 
             <div class="form-group" style="margin-top: auto;">
-                <button class="btn-action" onclick="saveTableChanges()"><i class="fa-regular fa-floppy-disk"></i> Actualizar Plano</button>
-                <button class="btn-action btn-secondary" onclick="alert('Espacio combinado correctamente')"><i class="fa-solid fa-arrows-spin"></i> Combinar Espacios</button>
+                <button class="btn-action" onclick="saveAndSyncData()"><i class="fa-solid fa-cloud-arrow-up"></i> Actualizar Plano & Sheets</button>
+                <button id="btn-merge" class="btn-action btn-secondary" onclick="toggleMergeMode()"><i class="fa-solid fa-link"></i> Combinar Espacios (Unir)</button>
             </div>
         </div>
 
     </div>
 
     <script>
-        let currentSelectedElement = document.querySelector('.table-element.selected');
+        let selectedTable = document.getElementById('table-M1');
+        let isMergeMode = false;
 
-        function clickedTable(element, id, pax, client) {
-            if(currentSelectedElement) {
-                currentSelectedElement.classList.remove('selected');
-            }
-            element.classList.add('selected');
-            currentSelectedElement = element;
-
-            document.getElementById('detail-title').innerText = `${id} Seleccionada`;
-            document.getElementById('form-name').value = client;
-            document.getElementById('form-pax').value = pax;
-            
-            if(element.classList.contains('occupied')) {
-                document.getElementById('form-status').value = 'occupied';
-            } else {
-                document.getElementById('form-status').value = 'free';
-            }
-        }
-
-        function selectMockReservation(tableId, name, pax, time) {
-            const elements = document.querySelectorAll('.table-element');
-            elements.forEach(el => {
-                if(el.querySelector('.table-id').innerText === tableId.replace('Mesa ', 'M')) {
-                    clickedTable(el, tableId, pax, name);
-                    document.getElementById('form-time').value = time;
+        // Inicializar eventos de clic en las mesas existentes
+        document.querySelectorAll('.table-element').forEach(table => {
+            table.addEventListener('click', function() {
+                if (isMergeMode) {
+                    executeTableMerge(this);
+                } else {
+                    selectNewTable(this);
                 }
             });
+        });
+
+        function selectNewTable(element) {
+            if(selectedTable) selectedTable.classList.remove('selected');
+            element.classList.add('selected');
+            selectedTable = element;
+
+            // Rellenar formulario derecho
+            document.getElementById('detail-title').innerText = `Mesa ${element.dataset.id} Seleccionada`;
+            document.getElementById('form-status').value = element.dataset.status;
+            document.getElementById('form-name').value = element.dataset.client;
+            document.getElementById('form-pax').value = element.dataset.pax;
+            
+            applyImmediateColorChange();
         }
 
-        function saveTableChanges() {
-            if(!currentSelectedElement) return;
+        // Cambio de Color Inmediato al interactuar con el selector
+        function applyImmediateColorChange() {
+            if(!selectedTable) return;
+            const targetStatus = document.getElementById('form-status').value;
             
-            const nameInput = document.getElementById('form-name').value;
-            const paxInput = document.getElementById('form-pax').value;
-            const statusInput = document.getElementById('form-status').value;
+            selectedTable.classList.remove('free', 'occupied', 'reserved');
+            selectedTable.classList.add(targetStatus);
+        }
 
-            currentSelectedElement.querySelector('.table-cap').innerText = `${paxInput} Pax`;
-
-            let tag = currentSelectedElement.querySelector('.table-client-tag');
-            
-            if(statusInput === 'occupied') {
-                currentSelectedElement.classList.remove('free');
-                currentSelectedElement.classList.add('occupied');
-                if(nameInput) {
-                    if(!tag) {
-                        tag = document.createElement('div');
-                        tag.className = 'table-client-tag';
-                        currentSelectedElement.appendChild(tag);
-                    }
-                    tag.innerText = nameInput;
-                }
+        // Lógica de Combinación Dinámica de Mesas
+        function toggleMergeMode() {
+            if(!selectedTable) return alert("Selecciona primero la mesa base.");
+            isMergeMode = !isMergeMode;
+            const btn = document.getElementById('btn-merge');
+            if(isMergeMode) {
+                btn.classList.add('btn-merge-active');
+                btn.innerHTML = `<i class="fa-solid fa-circle-dot"></i> Selecciona otra mesa...`;
             } else {
-                currentSelectedElement.classList.remove('occupied');
-                currentSelectedElement.classList.add('free');
+                btn.classList.remove('btn-merge-active');
+                btn.innerHTML = `<i class="fa-solid fa-link"></i> Combinar Espacios (Unir)`;
+            }
+        }
+
+        function executeTableMerge(targetTable) {
+            if(targetTable.id === selectedTable.id) {
+                alert("No puedes unir una mesa consigo misma.");
+                toggleMergeMode();
+                return;
+            }
+
+            // Dibujar puente visual entre las dos capas
+            const canvas = document.getElementById('canvas-container');
+            const bridge = document.createElement('div');
+            bridge.className = 'table-link-bridge';
+            
+            const x1 = parseFloat(selectedTable.style.left) + (parseFloat(selectedTable.style.width)/2);
+            const y1 = parseFloat(selectedTable.style.top) + (parseFloat(selectedTable.style.height)/2);
+            const x2 = parseFloat(targetTable.style.left) + (parseFloat(targetTable.style.width)/2);
+            const y2 = parseFloat(targetTable.style.top) + (parseFloat(targetTable.style.height)/2);
+            
+            const distance = Math.sqrt(((x2 - x1) ** 2) + ((y2 - y1) ** 2));
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+
+            bridge.style.width = `${distance}px`;
+            bridge.style.height = `6px`;
+            bridge.style.left = `${x1}px`;
+            bridge.style.top = `${y1}px`;
+            bridge.style.transform = `rotate(${angle}deg)`;
+            
+            canvas.appendChild(bridge);
+            alert(`Mesas ${selectedTable.dataset.id} y ${targetTable.dataset.id} combinadas con éxito.`);
+            toggleMergeMode();
+            
+            // Sincronizar unión con Google Sheets
+            dispatchSheetsUpdate(selectedTable.dataset.id, "merged", { joinedWith: targetTable.dataset.id });
+        }
+
+        // GUARDAR DATOS Y CONECTAR CON WEBHOOK DE GOOGLE SHEETS
+        function saveAndSyncData() {
+            if(!selectedTable) return;
+
+            const name = document.getElementById('form-name').value;
+            const pax = document.getElementById('form-pax').value;
+            const status = document.getElementById('form-status').value;
+
+            // Actualizar Atributos del Nodo en el HTML
+            selectedTable.dataset.client = name;
+            selectedTable.dataset.pax = pax;
+            selectedTable.dataset.status = status;
+
+            selectedTable.querySelector('.table-cap').innerText = `${pax} Pax`;
+
+            // Agregar o remover el tag flotante inferior
+            let tag = selectedTable.querySelector('.table-client-tag');
+            if(name && status !== 'free') {
+                if(!tag) {
+                    tag = document.createElement('div');
+                    tag.className = 'table-client-tag';
+                    selectedTable.appendChild(tag);
+                }
+                tag.innerText = name;
+            } else {
                 if(tag) tag.remove();
             }
 
-            alert("Plano de mesas actualizado con éxito de forma local.");
+            // Llamar la transmisión hacia Google Sheets
+            dispatchSheetsUpdate(selectedTable.dataset.id, status, {
+                cliente: name,
+                comensales: pax,
+                hora: document.getElementById('form-time').value
+            });
+            
+            rebuildLeftTimeline();
         }
+
+        // FUNCIÓN CONECTORA DE GOOGLE SHEETS (Sincronización mediante Webhook)
+        function dispatchSheetsUpdate(tableId, status, payload) {
+            // REEMPLAZA ESTA URL CON TU LINK DE WEBHOOK DE N8N O APP SCRIPT
+            const WEBHOOK_URL = "https://tu-instancia-n8n.voxaly.solutions/webhook/reservas";
+
+            console.log("Despachando actualización a Google Sheets:", { tableId, status, payload });
+
+            fetch(WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    mesa: tableId,
+                    estado: status,
+                    timestamp: new Date().toISOString(),
+                    ...payload
+                })
+            })
+            .then(res => console.log("Google Sheets Sincronizado"))
+            .catch(err => console.warn("Modo simulación local activo. Configura WEBHOOK_URL para impactar la hoja real."));
+        }
+
+        function rebuildLeftTimeline() {
+            const list = document.getElementById('timeline-list');
+            list.innerHTML = "";
+            document.querySelectorAll('.table-element').forEach(table => {
+                if(table.dataset.status !== 'free' && table.dataset.client) {
+                    list.innerHTML += `
+                        <div class="res-card">
+                            <div class="res-header">
+                                <div class="res-name">${table.dataset.client}</div>
+                                <div class="res-time">Mesa ${table.dataset.id}</div>
+                            </div>
+                            <div class="res-meta">
+                                <span><i class="fa-solid fa-users"></i> ${table.dataset.pax} Comensales</span>
+                            </div>
+                        </div>`;
+                }
+            });
+        }
+        
+        // Carga inicial
+        rebuildLeftTimeline();
     </script>
 </body>
 </html>
