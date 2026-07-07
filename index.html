@@ -3,144 +3,217 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reservas · Plano de Sala</title>
+<title>Salón · Plano de Reservas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0f1720;
-    --panel:#152029;
-    --panel-2:#1b2833;
-    --panel-3:#20303c;
-    --border:#2a3a46;
-    --text:#eef2f4;
-    --text-dim:#8fa1ac;
-    --gold:#c9a24b;
-    --gold-dim:#8a763c;
-    --free:#4f9d82;
-    --free-dim:#2c4c40;
-    --reserved:#c0564a;
-    --reserved-dim:#59302b;
-    --merged:#d9a441;
-    --danger:#c0564a;
-    --radius:10px;
-    font-size:16px;
+    --bg:#0c1218;
+    --panel:rgba(21,31,39,0.72);
+    --panel-solid:#161f27;
+    --panel-2:#1c2830;
+    --panel-3:#22303a;
+    --border:rgba(255,255,255,0.08);
+    --border-strong:rgba(255,255,255,0.14);
+    --text:#eef3f5;
+    --text-dim:#8fa3ac;
+    --text-faint:#5d7078;
+    --gold:#cda15a;
+    --gold-soft:rgba(205,161,90,0.16);
+    --free:#5fae8d;
+    --free-soft:rgba(95,174,141,0.18);
+    --reserved:#c26654;
+    --reserved-soft:rgba(194,102,84,0.18);
+    --merged:#d9ab52;
+    --radius-lg:18px;
+    --radius-md:12px;
+    --radius-sm:8px;
   }
   *{box-sizing:border-box;}
   html,body{height:100%;}
   body{
     margin:0;
-    background:var(--bg);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(205,161,90,0.07), transparent 42%),
+      radial-gradient(circle at 88% 92%, rgba(95,174,141,0.07), transparent 42%),
+      var(--bg);
     color:var(--text);
     font-family:'Inter',sans-serif;
     -webkit-font-smoothing:antialiased;
   }
-  h1,h2,h3,.brand{font-family:'Fraunces',serif;}
+  h1,h2,h3,.brand-word{font-family:'Fraunces',serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
   button{font-family:inherit;}
   input,select{font-family:inherit;}
+  ::selection{background:var(--gold-soft);}
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px;}
+  ::-webkit-scrollbar-track{background:transparent;}
 
-  /* ---------- Login ---------- */
+  /* ================= LOGIN ================= */
   #login-screen{
     min-height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
-    background:
-      radial-gradient(circle at 20% 20%, rgba(201,162,75,0.08), transparent 40%),
-      radial-gradient(circle at 80% 80%, rgba(79,157,130,0.08), transparent 40%),
-      var(--bg);
     padding:24px;
+    position:relative;
+    overflow:hidden;
   }
-  .login-card{
-    width:100%;
-    max-width:380px;
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:36px 32px;
-    box-shadow:0 20px 60px rgba(0,0,0,0.4);
+  #login-screen::before{
+    content:'';
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px);
+    background-size:40px 40px;
+    mask-image:radial-gradient(circle at 50% 45%, black 0%, transparent 72%);
   }
-  .login-card .mark{
-    width:44px;height:44px;border-radius:10px;
-    background:linear-gradient(135deg,var(--gold),#8a763c);
+  .login-wrap{position:relative;width:100%;max-width:900px;display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:22px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.55);border:1px solid var(--border);}
+  .login-showcase{
+    background:linear-gradient(165deg,#182029 0%, #101820 60%, #0c1116 100%);
+    padding:44px 38px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    position:relative;
+  }
+  .login-showcase .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px;position:relative;z-index:2;}
+  .login-showcase h1{font-size:30px;line-height:1.15;font-weight:600;margin:0 0 14px;color:var(--text);position:relative;z-index:2;}
+  .login-showcase p{font-size:13.5px;color:var(--text-dim);line-height:1.6;max-width:280px;position:relative;z-index:2;}
+  .ambience-svg{position:absolute;inset:0;width:100%;height:100%;opacity:0.16;pointer-events:none;z-index:1;}
+  .mini-plan{position:relative;height:170px;margin-top:26px;z-index:2;}
+  .mini-table{position:absolute;width:34px;height:34px;border-radius:10px;border:2px solid var(--free);background:var(--free-soft);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+  .mini-table.round{border-radius:50%;}
+  .mini-table.busy{border-color:var(--reserved);background:var(--reserved-soft);}
+  .login-showcase .stat-row{display:flex;gap:22px;margin-top:auto;padding-top:22px;border-top:1px solid var(--border);position:relative;z-index:2;}
+  .login-showcase .stat b{display:block;font-family:'Fraunces',serif;font-size:20px;color:var(--text);}
+  .login-showcase .stat span{font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;}
+
+  .login-form-side{
+    background:var(--panel-solid);
+    padding:48px 42px;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .login-form-side .mark{
+    width:38px;height:38px;border-radius:9px;
+    background:linear-gradient(135deg,var(--gold),#8a6f3a);
     display:flex;align-items:center;justify-content:center;
-    font-family:'Fraunces',serif;font-weight:600;color:#1a1305;font-size:20px;
-    margin-bottom:18px;
+    font-family:'Fraunces',serif;font-weight:700;color:#1a1305;font-size:17px;
+    margin-bottom:22px;
   }
-  .login-card h1{font-size:24px;font-weight:600;margin:0 0 6px;color:var(--text);}
-  .login-card p.sub{color:var(--text-dim);font-size:14px;margin:0 0 26px;}
-  .field{margin-bottom:16px;}
-  .field label{display:block;font-size:12.5px;color:var(--text-dim);margin-bottom:6px;letter-spacing:.02em;text-transform:uppercase;}
+  .login-form-side h2{font-size:21px;font-weight:600;margin:0 0 6px;color:var(--text);}
+  .login-form-side p.sub{color:var(--text-dim);font-size:13.5px;margin:0 0 26px;}
+  .field{margin-bottom:15px;}
+  .field label{display:block;font-size:11.5px;color:var(--text-dim);margin-bottom:6px;letter-spacing:.03em;text-transform:uppercase;}
   .field input, .field select{
-    width:100%;padding:11px 12px;border-radius:8px;
-    border:1px solid var(--border);background:var(--panel-2);color:var(--text);
-    font-size:14.5px;outline:none;transition:border-color .15s;
+    width:100%;padding:11px 13px;border-radius:9px;
+    border:1px solid var(--border-strong);background:#0f171e;color:var(--text);
+    font-size:14px;outline:none;transition:border-color .15s, box-shadow .15s;
   }
-  .field input:focus, .field select:focus{border-color:var(--gold);}
+  .field input:focus, .field select:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft);}
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    padding:11px 18px;border-radius:8px;border:1px solid transparent;
-    font-size:14.5px;font-weight:600;cursor:pointer;transition:all .15s;
+    padding:11px 18px;border-radius:9px;border:1px solid transparent;
+    font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;
+    white-space:nowrap;
   }
-  .btn-primary{background:var(--gold);color:#1a1305;}
-  .btn-primary:hover{background:#d9b45f;}
-  .btn-ghost{background:transparent;color:var(--text-dim);border-color:var(--border);}
+  .btn-primary{background:linear-gradient(135deg,var(--gold),#b98d47);color:#1a1305;}
+  .btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px);}
+  .btn-ghost{background:transparent;color:var(--text-dim);border-color:var(--border-strong);}
   .btn-ghost:hover{color:var(--text);border-color:var(--text-dim);}
-  .btn-danger{background:var(--reserved);color:#fff;}
-  .btn-danger:hover{background:#d16457;}
+  .btn-ghost.active{color:var(--gold);border-color:var(--gold);background:var(--gold-soft);}
+  .btn-danger{background:transparent;color:var(--reserved);border-color:var(--reserved);}
+  .btn-danger:hover{background:var(--reserved-soft);}
   .btn-block{width:100%;}
+  .btn-sm{padding:7px 12px;font-size:12.5px;border-radius:7px;}
   .login-error{
-    background:rgba(192,86,74,0.15);border:1px solid var(--reserved);color:#ffb7ac;
-    font-size:13px;padding:9px 12px;border-radius:8px;margin-bottom:16px;display:none;
+    background:var(--reserved-soft);border:1px solid var(--reserved);color:#ffc4b8;
+    font-size:12.5px;padding:9px 12px;border-radius:8px;margin-bottom:15px;display:none;
   }
-  .login-hint{margin-top:18px;font-size:12px;color:var(--text-dim);line-height:1.5;border-top:1px solid var(--border);padding-top:14px;}
+  .login-hint{margin-top:20px;font-size:11.5px;color:var(--text-faint);line-height:1.6;border-top:1px solid var(--border);padding-top:14px;}
+  .login-hint b{color:var(--text-dim);}
+  @media (max-width:760px){ .login-wrap{grid-template-columns:1fr;} .login-showcase{display:none;} }
 
-  /* ---------- App shell ---------- */
-  #app{display:none;min-height:100vh;grid-template-columns:64px 1fr;grid-template-rows:60px 1fr;grid-template-areas:"nav top" "nav main";}
+  /* ================= APP SHELL ================= */
+  #app{display:none;height:100vh;grid-template-columns:64px 288px 1fr 320px;grid-template-rows:60px 1fr;grid-template-areas:"nav top top top" "nav left center right";}
   #app.active{display:grid;}
 
   #topbar{
     grid-area:top;
-    background:var(--panel);
+    background:var(--panel-solid);
     border-bottom:1px solid var(--border);
     display:flex;align-items:center;justify-content:space-between;
     padding:0 22px;
   }
-  #topbar .brand{font-size:18px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:10px;}
-  #topbar .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--free);}
-  #topbar .rest-name{font-size:13px;color:var(--text-dim);}
-  #topbar .right{display:flex;align-items:center;gap:14px;}
+  #topbar .brand{font-size:16.5px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:10px;}
+  #topbar .brand .dot{width:7px;height:7px;border-radius:50%;background:var(--free);box-shadow:0 0 8px var(--free);}
+  #topbar .right{display:flex;align-items:center;gap:12px;}
   #date-picker{
-    background:var(--panel-2);border:1px solid var(--border);color:var(--text);
-    padding:8px 10px;border-radius:8px;font-size:13.5px;
+    background:#0f171e;border:1px solid var(--border-strong);color:var(--text);
+    padding:8px 10px;border-radius:8px;font-size:13px;
   }
+  .user-chip{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-dim);padding:6px 10px;border-radius:20px;background:var(--panel-2);border:1px solid var(--border);}
+  .user-chip .av{width:20px;height:20px;border-radius:50%;background:var(--gold-soft);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
 
   #nav{
     grid-area:nav;
-    background:var(--panel);
+    background:var(--panel-solid);
     border-right:1px solid var(--border);
     display:flex;flex-direction:column;align-items:center;
     padding:16px 0;gap:6px;
   }
   .nav-btn{
-    width:42px;height:42px;border-radius:9px;border:1px solid transparent;
+    width:42px;height:42px;border-radius:10px;border:1px solid transparent;
     background:transparent;color:var(--text-dim);cursor:pointer;
-    display:flex;align-items:center;justify-content:center;font-size:19px;
-    transition:all .15s;
+    display:flex;align-items:center;justify-content:center;font-size:18px;
+    transition:all .15s;position:relative;
   }
   .nav-btn:hover{background:var(--panel-2);color:var(--text);}
-  .nav-btn.active{background:var(--panel-3);color:var(--gold);border-color:var(--border);}
-  .nav-btn.logout{margin-top:auto;color:var(--text-dim);}
-  .nav-btn.logout:hover{color:var(--reserved);}
+  .nav-btn.active{background:var(--panel-3);color:var(--gold);border-color:var(--border-strong);}
+  .nav-btn.logout{margin-top:auto;color:var(--text-faint);}
+  .nav-btn.logout:hover{color:var(--reserved);background:var(--reserved-soft);}
 
-  main{grid-area:main;overflow:hidden;position:relative;display:flex;}
+  /* ---------- Left: timeline ---------- */
+  #left-panel{
+    grid-area:left;
+    background:var(--panel-solid);
+    border-right:1px solid var(--border);
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .search-box{padding:16px 16px 12px;position:relative;}
+  .search-box input{
+    width:100%;padding:9px 12px 9px 32px;background:#0f171e;
+    border:1px solid var(--border-strong);border-radius:9px;color:var(--text);font-size:13px;outline:none;
+  }
+  .search-box input:focus{border-color:var(--gold);}
+  .search-box .icn{position:absolute;left:26px;top:24px;color:var(--text-faint);font-size:13px;}
+  #left-list{flex:1;overflow-y:auto;padding:4px 14px 16px;}
+  .list-title{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);font-weight:700;margin:12px 0 8px;display:flex;justify-content:space-between;}
+  .res-card{
+    background:var(--panel-2);border:1px solid var(--border);border-radius:11px;
+    padding:11px 12px;margin-bottom:8px;cursor:pointer;transition:all .15s;
+  }
+  .res-card:hover{border-color:var(--gold);transform:translateY(-1px);}
+  .res-card.is-active{border-color:var(--gold);background:var(--gold-soft);}
+  .res-row1{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;font-weight:600;color:var(--text);}
+  .res-time-badge{font-size:11px;font-weight:700;color:var(--gold);background:var(--gold-soft);padding:2px 7px;border-radius:5px;}
+  .res-row2{display:flex;gap:10px;font-size:11.5px;color:var(--text-dim);margin-top:5px;}
+  .res-empty{font-size:13px;color:var(--text-faint);text-align:center;padding:36px 12px;line-height:1.6;}
 
-  /* ---------- Floor plan ---------- */
-  #plano-wrap{flex:1;position:relative;overflow:hidden;}
+  /* ---------- Center: floorplan ---------- */
+  #center-panel{grid-area:center;display:flex;flex-direction:column;padding:18px;overflow:hidden;position:relative;}
+  #zona-bar{display:flex;justify-content:space-between;align-items:center;background:var(--panel-2);border:1px solid var(--border);padding:6px;border-radius:11px;margin-bottom:14px;flex-shrink:0;}
+  #zona-tabs{display:flex;gap:4px;flex-wrap:wrap;}
+  .zona-btn{background:transparent;border:none;color:var(--text-dim);padding:8px 14px;font-size:12.5px;font-weight:600;border-radius:7px;cursor:pointer;transition:all .15s;}
+  .zona-btn.active-zona{color:#1a1305;background:var(--gold);}
+  .zona-btn:not(.active-zona):hover{color:var(--text);background:var(--panel-3);}
+  #zona-status{font-size:11.5px;color:var(--text-faint);padding:0 10px;display:flex;align-items:center;gap:6px;}
+  #zona-status .live{width:6px;height:6px;border-radius:50%;background:var(--free);box-shadow:0 0 6px var(--free);}
+
+  #plano-wrap{flex:1;position:relative;overflow:hidden;border-radius:16px;}
   #plano{
-    position:absolute;inset:16px;
-    border-radius:14px;
-    background-color:#101c25;
+    position:absolute;inset:0;
+    border-radius:16px;
+    background-color:#0f1922;
     background-image:
       linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
@@ -153,121 +226,211 @@
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     transform:translate(-50%,-50%);
     cursor:pointer;user-select:none;
-    transition:box-shadow .15s, transform .05s;
+    transition:filter .15s;
+    z-index:5;
   }
+  .mesa.puede-fusionar{filter:brightness(1.25) saturate(1.3);}
+  .chairs-wrap{position:relative;width:104px;height:104px;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+  .chairs-wrap .shape{pointer-events:auto;}
+  .chair{
+    position:absolute;width:12px;height:12px;border-radius:4px;
+    background:var(--free-soft);border:1.5px solid var(--free);
+    box-shadow:0 2px 5px rgba(0,0,0,0.35);
+  }
+  .mesa.reservada .chair{background:var(--reserved-soft);border-color:var(--reserved);}
   .mesa .shape{
-    width:64px;height:64px;
+    width:58px;height:58px;
     display:flex;align-items:center;justify-content:center;
-    background:var(--free-dim);
-    border:2px solid var(--free);
-    color:#d6efe4;
+    background:
+      radial-gradient(circle at 32% 28%, rgba(255,255,255,0.12), transparent 55%),
+      var(--free-soft);
+    border:2.5px solid var(--free);
+    color:#dff2ea;
     font-weight:700;font-size:15px;
-    box-shadow:0 4px 14px rgba(0,0,0,0.35);
+    box-shadow:0 4px 16px rgba(0,0,0,0.4), inset 0 0 0 3px rgba(12,18,24,0.35);
+    transition:box-shadow .15s, border-color .2s, background .2s;
   }
   .mesa.redonda .shape{border-radius:50%;}
   .mesa.cuadrada .shape{border-radius:12px;}
-  .mesa.reservada .shape{background:var(--reserved-dim);border-color:var(--reserved);color:#ffd9d2;}
-  .mesa .cap{font-size:9.5px;color:var(--text-dim);margin-top:4px;letter-spacing:.03em;}
-  .mesa.reservada .cap{color:#c98f87;}
-  .mesa:hover .shape{box-shadow:0 0 0 4px rgba(201,162,75,0.18), 0 4px 14px rgba(0,0,0,0.35);}
-  .mesa.seleccionando .shape{box-shadow:0 0 0 4px rgba(201,162,75,0.5);}
+  .mesa.reservada .shape{background:radial-gradient(circle at 32% 28%, rgba(255,255,255,0.1), transparent 55%), var(--reserved-soft);border-color:var(--reserved);color:#ffe1d9;}
+  .mesa .cap{font-size:9.5px;color:var(--text-dim);margin-top:2px;letter-spacing:.02em;background:rgba(12,18,24,0.6);padding:2px 6px;border-radius:5px;}
+  .mesa:hover .shape{box-shadow:0 0 0 5px rgba(205,161,90,0.16), 0 4px 16px rgba(0,0,0,0.4);}
+  .mesa.is-selected .shape{box-shadow:0 0 0 5px rgba(205,161,90,0.4), 0 4px 16px rgba(0,0,0,0.4);border-color:var(--gold);}
+  .mesa.seleccionando .shape{box-shadow:0 0 0 5px rgba(217,171,82,0.55);}
   .mesa.arrastrando{z-index:50;}
-  .mesa .edit-badges{position:absolute;top:-9px;right:-9px;display:none;}
-  #plano.modo-edicion .mesa .edit-badges{display:block;}
-  .badge-edit{
-    width:20px;height:20px;border-radius:50%;background:var(--panel-3);
-    border:1px solid var(--border);color:var(--text-dim);
-    display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;
+  .mesa.arrastrando .shape{box-shadow:0 10px 30px rgba(0,0,0,0.55), 0 0 0 5px rgba(205,161,90,0.3);}
+  .mesa .edit-badge, .mesa .del-badge{
+    position:absolute;top:-8px;width:20px;height:20px;border-radius:50%;
+    background:var(--panel-3);border:1px solid var(--border-strong);color:var(--text-dim);
+    display:none;align-items:center;justify-content:center;font-size:10.5px;cursor:pointer;z-index:6;
   }
-  .badge-edit:hover{color:var(--gold);border-color:var(--gold);}
+  .mesa .edit-badge{right:-8px;}
+  .mesa .del-badge{left:-8px;}
+  #plano.modo-edicion .mesa .edit-badge, #plano.modo-edicion .mesa .del-badge{display:flex;}
+  .edit-badge:hover{color:var(--gold);border-color:var(--gold);}
+  .del-badge:hover{color:var(--reserved);border-color:var(--reserved);}
 
-  #union-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+  #union-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+  #plano-ambience{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.09;}
 
-  #plano-toolbar{
-    position:absolute;top:28px;left:28px;display:flex;gap:10px;z-index:10;
-  }
+  #plano-toolbar{position:absolute;top:14px;left:14px;display:flex;gap:8px;z-index:10;}
   #plano-legend{
-    position:absolute;bottom:24px;left:28px;display:flex;gap:16px;z-index:10;
-    background:rgba(21,32,41,0.85);backdrop-filter:blur(4px);
-    padding:9px 14px;border-radius:9px;border:1px solid var(--border);
+    position:absolute;bottom:16px;left:14px;display:flex;gap:14px;z-index:10;
+    background:rgba(21,31,39,0.85);backdrop-filter:blur(6px);
+    padding:8px 13px;border-radius:9px;border:1px solid var(--border);
   }
-  .legend-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-dim);}
-  .legend-dot{width:10px;height:10px;border-radius:3px;}
-
-  #empty-plano{
-    position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text-dim);
-  }
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-dim);}
+  .legend-dot{width:9px;height:9px;border-radius:3px;}
+  #empty-plano{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--text-dim);text-align:center;padding:20px;}
   #empty-plano.show{display:flex;}
+  #empty-plano .big{font-size:34px;opacity:.6;}
 
-  /* ---------- Side panel (day list) ---------- */
-  #side-panel{
-    width:300px;border-left:1px solid var(--border);background:var(--panel);
-    padding:20px;overflow-y:auto;flex-shrink:0;
+  /* ---------- Right: detail panel ---------- */
+  #right-panel{
+    grid-area:right;background:var(--panel-solid);border-left:1px solid var(--border);
+    padding:20px;overflow-y:auto;display:flex;flex-direction:column;
   }
-  #side-panel h3{font-size:14px;margin:0 0 4px;color:var(--text);}
-  #side-panel .sub{font-size:12px;color:var(--text-dim);margin-bottom:16px;}
-  .res-item{
-    background:var(--panel-2);border:1px solid var(--border);border-radius:9px;
-    padding:11px 12px;margin-bottom:9px;cursor:pointer;
-  }
-  .res-item:hover{border-color:var(--gold-dim);}
-  .res-item .row1{display:flex;justify-content:space-between;font-size:13.5px;font-weight:600;color:var(--text);}
-  .res-item .row2{font-size:12px;color:var(--text-dim);margin-top:3px;}
-  .res-empty{font-size:13px;color:var(--text-dim);text-align:center;padding:30px 0;}
+  .rp-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text-faint);gap:10px;padding:20px;}
+  .rp-placeholder .big{font-size:30px;opacity:.5;}
+  .rp-placeholder p{font-size:12.5px;line-height:1.6;max-width:210px;}
 
-  /* ---------- Modal ---------- */
-  .overlay{
-    position:fixed;inset:0;background:rgba(6,10,14,0.6);backdrop-filter:blur(2px);
-    display:none;align-items:center;justify-content:center;z-index:100;padding:20px;
-  }
-  .overlay.show{display:flex;}
-  .modal{
-    width:100%;max-width:400px;background:var(--panel);border:1px solid var(--border);
-    border-radius:14px;padding:26px;box-shadow:0 30px 70px rgba(0,0,0,0.5);
-  }
-  .modal h3{margin:0 0 4px;font-size:18px;color:var(--text);}
-  .modal .modal-sub{font-size:12.5px;color:var(--text-dim);margin-bottom:20px;}
-  .modal .actions{display:flex;gap:10px;margin-top:22px;}
-  .modal .actions .btn{flex:1;}
-  .info-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13.5px;}
-  .info-row span:first-child{color:var(--text-dim);}
-  .close-x{position:absolute;top:18px;right:18px;background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;}
-  .modal{position:relative;}
+  .rp-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;}
+  .rp-title{font-size:19px;font-weight:600;font-family:'Fraunces',serif;color:var(--text);}
+  .rp-status-pill{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 9px;border-radius:20px;}
+  .rp-status-pill.libre{background:var(--free-soft);color:var(--free);}
+  .rp-status-pill.reservada{background:var(--reserved-soft);color:var(--reserved);}
+  .rp-sub{font-size:12.5px;color:var(--text-dim);margin-bottom:20px;}
+
+  .info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .info-row span:first-child{color:var(--text-faint);}
+  .info-row span:last-child{color:var(--text);font-weight:500;text-align:right;}
+
   .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .rp-actions{display:flex;flex-direction:column;gap:9px;margin-top:20px;}
+  .rp-divider{border:none;border-top:1px solid var(--border);margin:18px 0;}
+  .rp-note{font-size:11.5px;color:var(--text-faint);line-height:1.6;background:var(--panel-2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-top:14px;}
 
   #toast{
     position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);
-    background:var(--panel-3);border:1px solid var(--border);color:var(--text);
-    padding:10px 18px;border-radius:9px;font-size:13.5px;opacity:0;pointer-events:none;
-    transition:all .25s;z-index:200;
+    background:var(--panel-3);border:1px solid var(--border-strong);color:var(--text);
+    padding:10px 18px;border-radius:9px;font-size:13px;opacity:0;pointer-events:none;
+    transition:all .25s;z-index:200;box-shadow:0 10px 30px rgba(0,0,0,0.4);
   }
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-  ::-webkit-scrollbar{width:8px;}
-  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px;}
+  .confirm-overlay{
+    position:fixed;inset:0;background:rgba(6,10,14,0.6);backdrop-filter:blur(2px);
+    display:none;align-items:center;justify-content:center;z-index:150;padding:20px;
+  }
+  .confirm-overlay.show{display:flex;}
+  .confirm-box{background:var(--panel-solid);border:1px solid var(--border-strong);border-radius:14px;padding:22px;max-width:320px;box-shadow:0 30px 70px rgba(0,0,0,0.5);}
+  .confirm-box p{font-size:13.5px;color:var(--text-dim);margin:0 0 18px;line-height:1.5;}
+  .confirm-box .actions{display:flex;gap:10px;}
+  .confirm-box .actions .btn{flex:1;}
+  .confirm-box .field{margin-bottom:18px;}
+
+  /* ---------- Crear cuenta / login toggle ---------- */
+  .link-btn{background:none;border:none;padding:0;color:var(--gold);font-size:inherit;font-weight:600;cursor:pointer;text-decoration:underline;}
+  .checkbox-row{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--text-dim);margin:2px 0 18px;cursor:pointer;user-select:none;}
+  .checkbox-row input{width:16px;height:16px;accent-color:var(--gold);cursor:pointer;}
+  .zona-input-row{display:flex;gap:6px;margin-bottom:8px;}
+  .zona-input-row input{flex:1;}
+  .zona-input-row .btn-x{width:38px;flex-shrink:0;padding:0;}
+  #signup-view{display:none;}
+
+  /* ---------- Pisos/zonas: botón eliminar en la pestaña ---------- */
+  .zona-btn-wrap{position:relative;display:inline-flex;align-items:center;}
+  .zona-del-btn{
+    position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;
+    background:var(--panel-3);border:1px solid var(--border-strong);color:var(--text-faint);
+    font-size:10px;line-height:1;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;opacity:0;transition:opacity .15s;
+  }
+  .zona-btn-wrap:hover .zona-del-btn{opacity:1;}
+  .zona-del-btn:hover{color:var(--reserved);border-color:var(--reserved);}
 </style>
 </head>
 <body>
 
 <!-- ==================== LOGIN ==================== -->
 <div id="login-screen">
-  <div class="login-card">
-    <div class="mark">R</div>
-    <h1>Plano de Reservas</h1>
-    <p class="sub">Inicia sesión con el acceso de tu restaurante.</p>
-    <div class="login-error" id="login-error"></div>
-    <div class="field">
-      <label>Usuario</label>
-      <input type="text" id="login-usuario" placeholder="usuario" autocomplete="username">
+  <div class="login-wrap">
+    <div class="login-showcase">
+      <svg class="ambience-svg" viewBox="0 0 500 560" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 10 560 L 10 260 A 110 110 0 0 1 230 260 L 230 560" fill="none" stroke="#cda15a" stroke-width="2.5"/>
+        <path d="M 270 560 L 270 210 A 130 130 0 0 1 530 210 L 530 560" fill="none" stroke="#cda15a" stroke-width="2.5"/>
+        <line x1="120" y1="0" x2="120" y2="150" stroke="#cda15a" stroke-width="2"/>
+        <circle cx="120" cy="172" r="20" fill="none" stroke="#cda15a" stroke-width="2"/>
+        <line x1="120" y1="192" x2="120" y2="205" stroke="#cda15a" stroke-width="2"/>
+        <line x1="380" y1="0" x2="380" y2="110" stroke="#cda15a" stroke-width="2"/>
+        <circle cx="380" cy="134" r="24" fill="none" stroke="#cda15a" stroke-width="2"/>
+        <line x1="380" y1="158" x2="380" y2="172" stroke="#cda15a" stroke-width="2"/>
+        <path d="M 0 560 C -10 480 30 440 55 480 C 60 420 110 415 108 470 C 140 440 165 475 145 520 C 175 535 155 560 145 560 Z" fill="#5fae8d" opacity="0.55"/>
+        <circle cx="330" cy="430" r="46" fill="none" stroke="#cda15a" stroke-width="2"/>
+        <circle cx="330" cy="430" r="4" fill="#cda15a"/>
+      </svg>
+      <div>
+        <div class="eyebrow">Plano de sala en vivo</div>
+        <h1>Cada mesa,<br>siempre visible.</h1>
+        <p>Visualiza tu salón desde arriba, une mesas para grupos grandes y controla las reservas del día sin salir de una sola pantalla.</p>
+      </div>
+      <div class="mini-plan" id="mini-plan"></div>
+      <div class="stat-row">
+        <div class="stat"><b>100%</b><span>Datos en tu Sheet</span></div>
+        <div class="stat"><b>1</b><span>Acceso por restaurante</span></div>
+        <div class="stat"><b>∞</b><span>Mesas y zonas</span></div>
+      </div>
     </div>
-    <div class="field">
-      <label>Contraseña</label>
-      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
-    </div>
-    <button class="btn btn-primary btn-block" id="btn-login">Ingresar</button>
-    <div class="login-hint">
-      Cada restaurante tiene su propio usuario y contraseña, y solo puede ver y editar sus propias mesas y reservas.
-      <br><br>Demo: usuario <b>demo</b> / contraseña <b>demo123</b>
+    <div class="login-form-side">
+      <div class="mark">R</div>
+
+      <div id="login-view">
+        <h2>Iniciar sesión</h2>
+        <p class="sub">Accede al plano de reservas de tu restaurante.</p>
+        <div class="login-error" id="login-error"></div>
+        <div class="field">
+          <label>Usuario</label>
+          <input type="text" id="login-usuario" placeholder="usuario" autocomplete="username">
+        </div>
+        <div class="field">
+          <label>Contraseña</label>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn btn-primary btn-block" id="btn-login">Entrar al plano →</button>
+        <div class="login-hint">Cada restaurante tiene su propio usuario y contraseña, y solo ve sus propias mesas y reservas.<br><br><b>Demo:</b> usuario <b>demo</b> · contraseña <b>demo123</b><br><br>¿No tienes cuenta? <button type="button" class="link-btn" id="link-to-signup">Crea tu restaurante</button></div>
+      </div>
+
+      <div id="signup-view">
+        <h2>Crea tu restaurante</h2>
+        <p class="sub">Arma tu cuenta y tu salón en un minuto. No necesitas tocar ninguna hoja de cálculo.</p>
+        <div class="login-error" id="signup-error"></div>
+        <div class="field">
+          <label>Nombre del restaurante</label>
+          <input type="text" id="signup-nombre" placeholder="Ej. Restaurante Chahin">
+        </div>
+        <div class="field">
+          <label>Usuario</label>
+          <input type="text" id="signup-usuario" placeholder="usuario" autocomplete="username">
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Contraseña</label>
+            <input type="password" id="signup-password" placeholder="••••••••" autocomplete="new-password">
+          </div>
+          <div class="field">
+            <label>Confirmar</label>
+            <input type="password" id="signup-password2" placeholder="••••••••" autocomplete="new-password">
+          </div>
+        </div>
+        <div class="field">
+          <label>Salones o pisos iniciales</label>
+          <div id="signup-zonas-list"></div>
+          <button type="button" class="btn btn-ghost btn-sm" id="btn-signup-add-zona">+ Agregar otro piso o salón</button>
+        </div>
+        <label class="checkbox-row"><input type="checkbox" id="signup-terraza"> Tenemos terraza</label>
+        <button class="btn btn-primary btn-block" id="btn-signup">Crear cuenta y entrar →</button>
+        <div class="login-hint">Podrás agregar, renombrar o quitar mesas y pisos cuando quieras desde el modo edición.<br><br>¿Ya tienes cuenta? <button type="button" class="link-btn" id="link-to-login">Inicia sesión</button></div>
+      </div>
     </div>
   </div>
 </div>
@@ -283,84 +446,81 @@
   <header id="topbar">
     <div class="brand"><span class="dot"></span> <span id="rest-title">Plano de Reservas</span></div>
     <div class="right">
-      <span class="rest-name" id="rest-name-label"></span>
       <input type="date" id="date-picker">
+      <div class="user-chip"><span class="av" id="user-av">D</span><span id="user-label">usuario</span></div>
     </div>
   </header>
 
-  <main>
+  <aside id="left-panel">
+    <div class="search-box">
+      <span class="icn">⌕</span>
+      <input type="text" id="search-input" placeholder="Buscar cliente o mesa…">
+    </div>
+    <div id="left-list">
+      <div class="list-title"><span id="side-date-label">Reservas de hoy</span><span id="side-count" class="mono">0</span></div>
+      <div id="side-list"></div>
+    </div>
+  </aside>
+
+  <main id="center-panel">
+    <div id="zona-bar">
+      <div id="zona-tabs"></div>
+      <div id="zona-status"><span class="live"></span><span id="zona-status-text">Sincronizado con Sheets</span></div>
+    </div>
     <div id="plano-wrap">
       <div id="plano">
         <svg id="union-svg"></svg>
         <div id="mesas-container"></div>
         <div id="empty-plano">
-          <div style="font-size:32px;">▦</div>
-          <div>Aún no hay mesas configuradas.</div>
-          <button class="btn btn-primary" id="btn-empty-agregar">Agregar la primera mesa</button>
+          <div class="big">▦</div>
+          <div>Aún no hay mesas en esta zona.</div>
+          <button class="btn btn-primary btn-sm" id="btn-empty-agregar">+ Agregar la primera mesa</button>
         </div>
       </div>
       <div id="plano-toolbar">
-        <button class="btn btn-ghost" id="btn-agregar-mesa" style="display:none;">+ Agregar mesa</button>
-        <button class="btn btn-ghost" id="btn-modo-union" style="display:none;">⛓ Unir mesas</button>
+        <button class="btn btn-ghost btn-sm" id="btn-agregar-mesa" style="display:none;">+ Mesa</button>
+        <button class="btn btn-ghost btn-sm" id="btn-agregar-zona" style="display:none;">+ Piso / zona</button>
+        <button class="btn btn-ghost btn-sm" id="btn-modo-union" style="display:none;">⛓ Unir mesas</button>
       </div>
       <div id="plano-legend">
         <div class="legend-item"><span class="legend-dot" style="background:var(--free);"></span> Libre</div>
         <div class="legend-item"><span class="legend-dot" style="background:var(--reserved);"></span> Reservada</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--merged);"></span> Mesas unidas</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--merged);"></span> Unidas</div>
       </div>
     </div>
-
-    <aside id="side-panel">
-      <h3 id="side-date-label">Reservas de hoy</h3>
-      <div class="sub" id="side-count">0 reservas</div>
-      <div id="side-list"></div>
-    </aside>
   </main>
-</div>
 
-<!-- ==================== MODAL: Reserva ==================== -->
-<div class="overlay" id="overlay-reserva">
-  <div class="modal">
-    <button class="close-x" data-close>×</button>
-    <div id="reserva-modal-content"></div>
-  </div>
-</div>
-
-<!-- ==================== MODAL: Editar mesa ==================== -->
-<div class="overlay" id="overlay-mesa">
-  <div class="modal">
-    <button class="close-x" data-close>×</button>
-    <h3 id="mesa-modal-title">Editar mesa</h3>
-    <p class="modal-sub">Personaliza el número, nombre y capacidad.</p>
-    <div class="grid-2">
-      <div class="field">
-        <label>Número</label>
-        <input type="text" id="mesa-numero">
-      </div>
-      <div class="field">
-        <label>Capacidad</label>
-        <input type="number" id="mesa-capacidad" min="1" value="2">
-      </div>
+  <aside id="right-panel">
+    <div class="rp-placeholder" id="rp-placeholder">
+      <div class="big">✦</div>
+      <p>Selecciona una mesa en el plano para ver o crear una reserva.</p>
     </div>
-    <div class="field">
-      <label>Nombre para mostrar</label>
-      <input type="text" id="mesa-nombre" placeholder="Mesa 1">
-    </div>
-    <div class="field">
-      <label>Forma</label>
-      <select id="mesa-forma">
-        <option value="redonda">Redonda</option>
-        <option value="cuadrada">Cuadrada</option>
-      </select>
-    </div>
-    <div class="actions">
-      <button class="btn btn-danger" id="btn-eliminar-mesa">Eliminar</button>
-      <button class="btn btn-primary" id="btn-guardar-mesa">Guardar</button>
-    </div>
-  </div>
+    <div id="rp-content" style="display:none;"></div>
+  </aside>
 </div>
 
 <div id="toast"></div>
+
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <p id="confirm-text">¿Confirmar acción?</p>
+    <div class="actions">
+      <button class="btn btn-ghost" id="confirm-cancel">Cancelar</button>
+      <button class="btn btn-danger" id="confirm-ok">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="prompt-overlay">
+  <div class="confirm-box">
+    <p id="prompt-text">Nombre del piso o zona</p>
+    <div class="field"><input type="text" id="prompt-input" placeholder=""></div>
+    <div class="actions">
+      <button class="btn btn-ghost" id="prompt-cancel">Cancelar</button>
+      <button class="btn btn-primary" id="prompt-ok">Aceptar</button>
+    </div>
+  </div>
+</div>
 
 <script>
 /* =====================================================================
@@ -368,7 +528,7 @@
    Pega aquí la URL de tu Google Apps Script (Implementar > Aplicación
    web). Debe terminar en /exec. Ver Code.gs para el backend.
 ===================================================================== */
-const API_URL = 'PEGA_AQUI_TU_URL_DE_GOOGLE_APPS_SCRIPT';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxqP8S-tDo_evZr1t7GRDNJtqqojcOEC6LBF9s9cMsaFXa8DDsev1Z6VD-GtqZavTKo/exec';
 
 /* =====================================================================
    ESTADO
@@ -376,12 +536,16 @@ const API_URL = 'PEGA_AQUI_TU_URL_DE_GOOGLE_APPS_SCRIPT';
 const state = {
   restauranteId: null,
   nombreRestaurante: '',
+  usuario: '',
   mesas: [],
   reservas: [],
   fecha: todayISO(),
   modoEdicion: false,
   modoUnion: false,
   seleccionUnion: [],
+  zonaActiva: 'Todas',
+  mesaSeleccionada: null,
+  busqueda: '',
 };
 
 function todayISO(){
@@ -390,6 +554,25 @@ function todayISO(){
   const local = new Date(d.getTime() - off*60000);
   return local.toISOString().slice(0,10);
 }
+
+/* =====================================================================
+   MINI PLANO DECORATIVO (pantalla de login)
+===================================================================== */
+(function renderMiniPlan(){
+  const cont = document.getElementById('mini-plan');
+  const layout = [
+    {x:8,y:10,round:true,busy:false},{x:34,y:6,round:false,busy:true},
+    {x:60,y:18,round:true,busy:false},{x:82,y:8,round:false,busy:false},
+    {x:14,y:55,round:false,busy:false},{x:42,y:50,round:true,busy:true},
+    {x:68,y:60,round:false,busy:false},{x:88,y:50,round:true,busy:false},
+  ];
+  layout.forEach(t=>{
+    const div = document.createElement('div');
+    div.className = 'mini-table' + (t.round?' round':'') + (t.busy?' busy':'');
+    div.style.left = t.x+'%'; div.style.top = t.y+'%';
+    cont.appendChild(div);
+  });
+})();
 
 /* =====================================================================
    API HELPER
@@ -401,7 +584,6 @@ async function api(action, payload){
   }
   const res = await fetch(API_URL, {
     method:'POST',
-    // text/plain evita el preflight OPTIONS, que Apps Script no maneja bien
     headers:{ 'Content-Type':'text/plain;charset=utf-8' },
     body: JSON.stringify({ action, ...payload }),
   });
@@ -418,11 +600,62 @@ function toast(msg){
   t._timer = setTimeout(()=>t.classList.remove('show'), 2600);
 }
 
+function confirmDialog(text){
+  return new Promise(resolve=>{
+    const ov = document.getElementById('confirm-overlay');
+    document.getElementById('confirm-text').textContent = text;
+    ov.classList.add('show');
+    const cleanup = (val)=>{
+      ov.classList.remove('show');
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+      resolve(val);
+    };
+    const okBtn = document.getElementById('confirm-ok');
+    const cancelBtn = document.getElementById('confirm-cancel');
+    const onOk = ()=>cleanup(true);
+    const onCancel = ()=>cleanup(false);
+    okBtn.addEventListener('click', onOk);
+    cancelBtn.addEventListener('click', onCancel);
+  });
+}
+
+function promptDialog(text, placeholder){
+  return new Promise(resolve=>{
+    const ov = document.getElementById('prompt-overlay');
+    document.getElementById('prompt-text').textContent = text;
+    const input = document.getElementById('prompt-input');
+    input.value = '';
+    input.placeholder = placeholder || '';
+    ov.classList.add('show');
+    setTimeout(()=>input.focus(), 60);
+    const cleanup = (val)=>{
+      ov.classList.remove('show');
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+      input.removeEventListener('keydown', onKey);
+      resolve(val);
+    };
+    const okBtn = document.getElementById('prompt-ok');
+    const cancelBtn = document.getElementById('prompt-cancel');
+    const onOk = ()=>cleanup(input.value);
+    const onCancel = ()=>cleanup(null);
+    const onKey = (e)=>{
+      if(e.key === 'Enter') cleanup(input.value);
+      if(e.key === 'Escape') cleanup(null);
+    };
+    okBtn.addEventListener('click', onOk);
+    cancelBtn.addEventListener('click', onCancel);
+    input.addEventListener('keydown', onKey);
+  });
+}
+
 /* =====================================================================
    LOGIN
 ===================================================================== */
 document.getElementById('btn-login').addEventListener('click', doLogin);
 document.getElementById('login-password').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+document.getElementById('login-usuario').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 
 async function doLogin(){
   const usuario = document.getElementById('login-usuario').value.trim();
@@ -434,25 +667,124 @@ async function doLogin(){
     errBox.style.display = 'block';
     return;
   }
+  const btn = document.getElementById('btn-login');
+  btn.disabled = true; btn.textContent = 'Verificando…';
   try{
     const data = await api('login', { usuario, password });
     state.restauranteId = data.restaurante_id;
     state.nombreRestaurante = data.nombre_restaurante;
+    state.usuario = usuario;
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').classList.add('active');
     document.getElementById('rest-title').textContent = data.nombre_restaurante;
-    document.getElementById('rest-name-label').textContent = usuario;
+    document.getElementById('user-label').textContent = usuario;
+    document.getElementById('user-av').textContent = usuario.charAt(0).toUpperCase();
     document.getElementById('date-picker').value = state.fecha;
     await cargarTodo();
   }catch(err){
     errBox.textContent = err.message || 'No se pudo iniciar sesión.';
     errBox.style.display = 'block';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Entrar al plano →';
   }
 }
 
-document.getElementById('nav-logout').addEventListener('click', ()=>{
-  location.reload();
+document.getElementById('nav-logout').addEventListener('click', ()=> location.reload());
+
+/* =====================================================================
+   CREAR CUENTA (registro de restaurante nuevo, sin tocar Sheets)
+===================================================================== */
+document.getElementById('link-to-signup').addEventListener('click', ()=>{
+  document.getElementById('login-view').style.display = 'none';
+  document.getElementById('signup-view').style.display = 'block';
 });
+document.getElementById('link-to-login').addEventListener('click', ()=>{
+  document.getElementById('signup-view').style.display = 'none';
+  document.getElementById('login-view').style.display = 'block';
+});
+
+function agregarFilaZonaSignup(valor){
+  const cont = document.getElementById('signup-zonas-list');
+  const row = document.createElement('div');
+  row.className = 'zona-input-row';
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'signup-zona-input';
+  input.placeholder = 'Ej. Salón Principal, Piso 2…';
+  input.value = valor || '';
+  const btnX = document.createElement('button');
+  btnX.type = 'button';
+  btnX.className = 'btn btn-ghost btn-sm btn-x';
+  btnX.textContent = '×';
+  btnX.addEventListener('click', ()=>{
+    const filas = document.querySelectorAll('#signup-zonas-list .zona-input-row');
+    if(filas.length > 1) row.remove();
+    else input.value = '';
+  });
+  row.appendChild(input);
+  row.appendChild(btnX);
+  cont.appendChild(row);
+}
+agregarFilaZonaSignup('Salón Principal');
+document.getElementById('btn-signup-add-zona').addEventListener('click', ()=> agregarFilaZonaSignup(''));
+
+document.getElementById('btn-signup').addEventListener('click', doSignup);
+document.getElementById('signup-password2').addEventListener('keydown', e=>{ if(e.key==='Enter') doSignup(); });
+
+async function doSignup(){
+  const nombre = document.getElementById('signup-nombre').value.trim();
+  const usuario = document.getElementById('signup-usuario').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const password2 = document.getElementById('signup-password2').value;
+  const errBox = document.getElementById('signup-error');
+  errBox.style.display = 'none';
+
+  if(!nombre || !usuario || !password){
+    errBox.textContent = 'Completa el nombre del restaurante, usuario y contraseña.';
+    errBox.style.display = 'block';
+    return;
+  }
+  if(password.length < 4){
+    errBox.textContent = 'La contraseña debe tener al menos 4 caracteres.';
+    errBox.style.display = 'block';
+    return;
+  }
+  if(password !== password2){
+    errBox.textContent = 'Las contraseñas no coinciden.';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  let zonas = Array.from(document.querySelectorAll('.signup-zona-input'))
+    .map(i => i.value.trim())
+    .filter(v => v);
+  if(document.getElementById('signup-terraza').checked && !zonas.some(z => z.toLowerCase() === 'terraza')){
+    zonas.push('Terraza');
+  }
+  if(!zonas.length) zonas = ['Salón Principal'];
+
+  const btn = document.getElementById('btn-signup');
+  btn.disabled = true; btn.textContent = 'Creando tu restaurante…';
+  try{
+    const data = await api('registrarRestaurante', { usuario, password, nombre_restaurante: nombre, zonas });
+    state.restauranteId = data.restaurante_id;
+    state.nombreRestaurante = data.nombre_restaurante;
+    state.usuario = usuario;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').classList.add('active');
+    document.getElementById('rest-title').textContent = data.nombre_restaurante;
+    document.getElementById('user-label').textContent = usuario;
+    document.getElementById('user-av').textContent = usuario.charAt(0).toUpperCase();
+    document.getElementById('date-picker').value = state.fecha;
+    await cargarTodo();
+    toast('¡Cuenta creada! Este es el plano de ' + data.nombre_restaurante + '.');
+  }catch(err){
+    errBox.textContent = err.message || 'No se pudo crear la cuenta.';
+    errBox.style.display = 'block';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Crear cuenta y entrar →';
+  }
+}
 
 /* =====================================================================
    CARGA DE DATOS
@@ -464,7 +796,7 @@ async function cargarTodo(){
 
 async function cargarMesas(){
   const data = await api('getMesas', { restaurante_id: state.restauranteId });
-  state.mesas = data.mesas.map(m => ({...m, pos_x:Number(m.pos_x), pos_y:Number(m.pos_y), capacidad:Number(m.capacidad)}));
+  state.mesas = data.mesas.map(m => ({...m, pos_x:Number(m.pos_x), pos_y:Number(m.pos_y), capacidad:Number(m.capacidad), zona: m.zona || 'Salón Principal'}));
 }
 
 async function cargarReservas(){
@@ -475,7 +807,13 @@ async function cargarReservas(){
 document.getElementById('date-picker').addEventListener('change', async (e)=>{
   state.fecha = e.target.value;
   await cargarReservas();
+  cerrarPanelDerecho();
   render();
+});
+
+document.getElementById('search-input').addEventListener('input', (e)=>{
+  state.busqueda = e.target.value.trim().toLowerCase();
+  renderLeftList();
 });
 
 /* =====================================================================
@@ -493,46 +831,136 @@ function grupoDe(mesaId){
   const partner = state.mesas.find(m=>m.id===partnerId);
   return partner ? [mesa, partner] : [mesa];
 }
-
-function estaUnida(mesaId){
-  return grupoDe(mesaId).length > 1;
-}
-
+function estaUnida(mesaId){ return grupoDe(mesaId).length > 1; }
 function reservaDeMesa(mesaId){
   return state.reservas.find(r => String(r.mesa_id).split(',').includes(mesaId));
 }
 
 /* =====================================================================
-   RENDER
+   RENDER GENERAL
 ===================================================================== */
 function render(){
+  renderZonaTabs();
   renderToolbar();
   renderPlano();
-  renderSidePanel();
+  renderLeftList();
+  renderRightPanel();
+}
+
+function zonasDisponibles(){
+  const zonas = Array.from(new Set(state.mesas.map(m=>m.zona || 'Salón Principal')));
+  return zonas.length ? zonas : ['Salón Principal'];
+}
+
+function renderZonaTabs(){
+  const zonas = zonasDisponibles();
+  if(!zonas.includes(state.zonaActiva) && state.zonaActiva !== 'Todas'){
+    state.zonaActiva = 'Todas';
+  }
+  const cont = document.getElementById('zona-tabs');
+  cont.innerHTML = '';
+  const opciones = zonas.length > 1 ? ['Todas', ...zonas] : zonas;
+  opciones.forEach(z=>{
+    const wrap = document.createElement('div');
+    wrap.className = 'zona-btn-wrap';
+    const b = document.createElement('button');
+    b.className = 'zona-btn' + (state.zonaActiva === z ? ' active-zona' : '');
+    b.textContent = z;
+    b.addEventListener('click', ()=>{ state.zonaActiva = z; render(); });
+    wrap.appendChild(b);
+    if(state.modoEdicion && z !== 'Todas'){
+      const x = document.createElement('button');
+      x.className = 'zona-del-btn';
+      x.title = 'Eliminar este piso/zona';
+      x.textContent = '×';
+      x.addEventListener('click', (ev)=>{ ev.stopPropagation(); eliminarZona(z); });
+      wrap.appendChild(x);
+    }
+    cont.appendChild(wrap);
+  });
+}
+
+/* ---------- Crear un piso/zona nuevo ---------- */
+async function crearNuevaZona(){
+  const nombre = await promptDialog('Nombre del nuevo piso o zona', 'Ej. Terraza, Piso 2, Salón VIP…');
+  if(nombre === null) return;
+  const zonaLimpia = nombre.trim();
+  if(!zonaLimpia) return;
+  const existente = zonasDisponibles().find(z => z.toLowerCase() === zonaLimpia.toLowerCase());
+  if(existente){
+    toast('Ya existe una zona llamada "' + existente + '".');
+    state.zonaActiva = existente;
+    render();
+    return;
+  }
+  const numero = String(state.mesas.length + 1);
+  const nuevaMesa = {
+    id:null, numero, nombre:'Mesa ' + numero, capacidad:2, forma:'redonda',
+    pos_x:50, pos_y:50, unida_a:'', zona: zonaLimpia,
+  };
+  try{
+    const data = await api('saveMesa', { restaurante_id: state.restauranteId, mesa: nuevaMesa });
+    nuevaMesa.id = data.id;
+    state.mesas.push(nuevaMesa);
+    state.modoEdicion = true;
+    state.zonaActiva = zonaLimpia;
+    state.mesaSeleccionada = nuevaMesa.id;
+    toast('Zona "' + zonaLimpia + '" creada con una mesa inicial.');
+    render();
+  }catch(err){ toast('Error al crear la zona: ' + err.message); }
+}
+document.getElementById('btn-agregar-zona').addEventListener('click', crearNuevaZona);
+
+/* ---------- Eliminar un piso/zona completo ---------- */
+async function eliminarZona(zona){
+  const mesasDeZona = state.mesas.filter(m => (m.zona || 'Salón Principal') === zona);
+  const ok = await confirmDialog(
+    '¿Eliminar "' + zona + '"? Se eliminarán ' + mesasDeZona.length +
+    (mesasDeZona.length === 1 ? ' mesa de esa zona.' : ' mesas de esa zona.') +
+    ' Esta acción no se puede deshacer.'
+  );
+  if(!ok) return;
+  try{
+    for(const m of mesasDeZona){
+      await api('deleteMesa', { restaurante_id: state.restauranteId, mesa_id: m.id });
+    }
+    state.mesas = state.mesas.filter(m => (m.zona || 'Salón Principal') !== zona);
+    if(state.zonaActiva === zona) state.zonaActiva = 'Todas';
+    cerrarPanelDerecho();
+    toast('Zona "' + zona + '" eliminada.');
+    render();
+  }catch(err){ toast('Error al eliminar la zona: ' + err.message); }
+}
+
+function mesasVisibles(){
+  if(state.zonaActiva === 'Todas') return state.mesas;
+  return state.mesas.filter(m => (m.zona || 'Salón Principal') === state.zonaActiva);
 }
 
 function renderToolbar(){
   document.getElementById('btn-agregar-mesa').style.display = state.modoEdicion ? 'inline-flex' : 'none';
+  document.getElementById('btn-agregar-zona').style.display = state.modoEdicion ? 'inline-flex' : 'none';
   document.getElementById('btn-modo-union').style.display = state.modoEdicion ? 'inline-flex' : 'none';
   document.getElementById('plano').classList.toggle('modo-edicion', state.modoEdicion);
   document.getElementById('nav-edicion').classList.toggle('active', state.modoEdicion);
   document.getElementById('nav-plano').classList.toggle('active', !state.modoEdicion);
   const btnUnion = document.getElementById('btn-modo-union');
-  btnUnion.classList.toggle('btn-primary', state.modoUnion);
-  btnUnion.classList.toggle('btn-ghost', !state.modoUnion);
-  btnUnion.textContent = state.modoUnion ? '⛓ Selecciona 2 mesas…' : '⛓ Unir mesas';
+  btnUnion.classList.toggle('active', state.modoUnion);
+  btnUnion.textContent = state.modoUnion ? '⛓ Elige 2 mesas…' : '⛓ Unir mesas';
 }
 
 function renderPlano(){
   const cont = document.getElementById('mesas-container');
   cont.innerHTML = '';
-  document.getElementById('empty-plano').classList.toggle('show', state.mesas.length === 0);
+  const mesas = mesasVisibles();
+  document.getElementById('empty-plano').classList.toggle('show', mesas.length === 0);
 
-  state.mesas.forEach(mesa=>{
+  mesas.forEach(mesa=>{
     const reservada = !!reservaDeMesa(mesa.id);
     const div = document.createElement('div');
     div.className = 'mesa ' + mesa.forma + (reservada ? ' reservada' : '') +
-      (state.seleccionUnion.includes(mesa.id) ? ' seleccionando' : '');
+      (state.seleccionUnion.includes(mesa.id) ? ' seleccionando' : '') +
+      (state.mesaSeleccionada === mesa.id ? ' is-selected' : '');
     div.style.left = mesa.pos_x + '%';
     div.style.top = mesa.pos_y + '%';
     div.dataset.id = mesa.id;
@@ -540,16 +968,17 @@ function renderPlano(){
     div.innerHTML = `
       <div class="shape">${escapeHtml(mesa.numero)}</div>
       <div class="cap">${escapeHtml(mesa.nombre)} · ${mesa.capacidad}p</div>
-      <div class="edit-badges"><div class="badge-edit" data-edit="${mesa.id}">✎</div></div>
+      <div class="edit-badge" data-edit="${mesa.id}">✎</div>
     `;
 
     div.addEventListener('click', (e)=>{
-      if(e.target.closest('.badge-edit')) return;
+      if(e.target.closest('.edit-badge')) return;
       onClickMesa(mesa.id);
     });
-    div.querySelector('.badge-edit').addEventListener('click', (e)=>{
+    div.querySelector('.edit-badge').addEventListener('click', (e)=>{
       e.stopPropagation();
-      abrirModalMesa(mesa.id);
+      state.mesaSeleccionada = mesa.id;
+      render();
     });
 
     habilitarArrastre(div, mesa);
@@ -564,7 +993,7 @@ function renderUniones(){
   const planoRect = document.getElementById('plano').getBoundingClientRect();
   svg.innerHTML = '';
   const vistos = new Set();
-  state.mesas.forEach(mesa=>{
+  mesasVisibles().forEach(mesa=>{
     if(!mesa.unida_a || vistos.has(mesa.id)) return;
     const partner = state.mesas.find(m=>m.id===mesa.unida_a);
     if(!partner) return;
@@ -575,27 +1004,39 @@ function renderUniones(){
     line.setAttribute('x1', x1); line.setAttribute('y1', y1);
     line.setAttribute('x2', x2); line.setAttribute('y2', y2);
     line.setAttribute('stroke', 'var(--merged)');
-    line.setAttribute('stroke-width', '26');
+    line.setAttribute('stroke-width', '24');
     line.setAttribute('stroke-linecap', 'round');
-    line.setAttribute('opacity', '0.35');
+    line.setAttribute('opacity', '0.32');
     svg.appendChild(line);
   });
 }
 
-function renderSidePanel(){
+/* ---------- Left list ---------- */
+function renderLeftList(){
   const hoy = todayISO();
   document.getElementById('side-date-label').textContent =
     state.fecha === hoy ? 'Reservas de hoy' : 'Reservas del ' + formatFechaLegible(state.fecha);
-  document.getElementById('side-count').textContent =
-    state.reservas.length + (state.reservas.length === 1 ? ' reserva' : ' reservas');
+
+  let items = [...state.reservas];
+  if(state.busqueda){
+    items = items.filter(r=>{
+      const mesaIds = String(r.mesa_id).split(',');
+      const nombres = mesaIds.map(id=>{
+        const m = state.mesas.find(x=>x.id===id);
+        return m ? (m.nombre + ' ' + m.numero) : '';
+      }).join(' ').toLowerCase();
+      return r.cliente.toLowerCase().includes(state.busqueda) || nombres.includes(state.busqueda);
+    });
+  }
+  document.getElementById('side-count').textContent = items.length;
 
   const list = document.getElementById('side-list');
   list.innerHTML = '';
-  if(state.reservas.length === 0){
-    list.innerHTML = '<div class="res-empty">No hay reservas para este día.</div>';
+  if(items.length === 0){
+    list.innerHTML = `<div class="res-empty">${state.reservas.length===0 ? 'No hay reservas para este día.' : 'Sin resultados para tu búsqueda.'}</div>`;
     return;
   }
-  const ordenadas = [...state.reservas].sort((a,b)=> String(a.hora).localeCompare(String(b.hora)));
+  const ordenadas = items.sort((a,b)=> String(a.hora).localeCompare(String(b.hora)));
   ordenadas.forEach(r=>{
     const mesaIds = String(r.mesa_id).split(',');
     const nombres = mesaIds.map(id=>{
@@ -603,12 +1044,17 @@ function renderSidePanel(){
       return m ? m.nombre : '?';
     }).join(' + ');
     const item = document.createElement('div');
-    item.className = 'res-item';
+    item.className = 'res-card' + (mesaIds.includes(state.mesaSeleccionada) ? ' is-active' : '');
     item.innerHTML = `
-      <div class="row1"><span>${escapeHtml(r.cliente)}</span><span>${escapeHtml(r.hora)}</span></div>
-      <div class="row2">${escapeHtml(nombres)} · ${escapeHtml(String(r.personas))} personas</div>
+      <div class="res-row1"><span>${escapeHtml(r.cliente)}</span><span class="res-time-badge">${escapeHtml(r.hora)}</span></div>
+      <div class="res-row2"><span>${escapeHtml(nombres)}</span><span>${escapeHtml(String(r.personas))}p</span></div>
     `;
-    item.addEventListener('click', ()=> onClickMesa(mesaIds[0]));
+    item.addEventListener('click', ()=>{
+      const mesa = state.mesas.find(m=>m.id===mesaIds[0]);
+      if(mesa) state.zonaActiva = 'Todas';
+      state.mesaSeleccionada = mesaIds[0];
+      render();
+    });
     list.appendChild(item);
   });
 }
@@ -625,24 +1071,17 @@ function formatFechaLegible(iso){
    INTERACCIÓN CON MESAS
 ===================================================================== */
 function onClickMesa(mesaId){
-  if(state.modoUnion){
-    toggleSeleccionUnion(mesaId);
-    return;
-  }
-  if(state.modoEdicion) return; // en edición, solo el lápiz abre el modal
-  abrirModalReserva(mesaId);
+  if(state.modoUnion){ toggleSeleccionUnion(mesaId); return; }
+  state.mesaSeleccionada = mesaId;
+  render();
 }
 
 function toggleSeleccionUnion(mesaId){
   const idx = state.seleccionUnion.indexOf(mesaId);
   if(idx >= 0){ state.seleccionUnion.splice(idx,1); }
   else { state.seleccionUnion.push(mesaId); }
-
-  if(state.seleccionUnion.length === 2){
-    unirMesasSeleccionadas();
-  } else {
-    renderPlano();
-  }
+  if(state.seleccionUnion.length === 2){ unirMesasSeleccionadas(); }
+  else { renderPlano(); }
 }
 
 async function unirMesasSeleccionadas(){
@@ -652,11 +1091,10 @@ async function unirMesasSeleccionadas(){
     const m1 = state.mesas.find(m=>m.id===id1);
     if(m1) m1.unida_a = id2;
     toast('Mesas unidas correctamente');
-  }catch(err){
-    toast('No se pudo unir: ' + err.message);
-  }
+  }catch(err){ toast('No se pudo unir: ' + err.message); }
   state.seleccionUnion = [];
   state.modoUnion = false;
+  state.mesaSeleccionada = id1;
   render();
 }
 
@@ -670,17 +1108,15 @@ async function separarGrupo(mesaId){
     grupo.forEach(m => m.unida_a = '');
     toast('Mesas separadas');
     render();
-  }catch(err){
-    toast('Error al separar: ' + err.message);
-  }
+  }catch(err){ toast('Error al separar: ' + err.message); }
 }
 
 /* ---- Arrastrar mesas (solo en modo edición) ---- */
 function habilitarArrastre(div, mesa){
-  let dragging = false, startX, startY;
+  let dragging = false;
   div.addEventListener('pointerdown', (e)=>{
     if(!state.modoEdicion || state.modoUnion) return;
-    if(e.target.closest('.badge-edit')) return;
+    if(e.target.closest('.edit-badge')) return;
     dragging = true;
     div.classList.add('arrastrando');
     div.setPointerCapture(e.pointerId);
@@ -697,74 +1133,94 @@ function habilitarArrastre(div, mesa){
     div.style.top = py + '%';
     renderUniones();
   });
-  const soltar = async (e)=>{
+  const soltar = async ()=>{
     if(!dragging) return;
     dragging = false;
     div.classList.remove('arrastrando');
-    try{
-      await api('saveMesa', { restaurante_id: state.restauranteId, mesa });
-    }catch(err){
-      toast('No se pudo guardar la posición: ' + err.message);
-    }
+    try{ await api('saveMesa', { restaurante_id: state.restauranteId, mesa }); }
+    catch(err){ toast('No se pudo guardar la posición: ' + err.message); }
   };
   div.addEventListener('pointerup', soltar);
   div.addEventListener('pointercancel', soltar);
 }
 
 /* =====================================================================
-   MODAL: RESERVA
+   PANEL DERECHO — vive seleccionado, sin popups
 ===================================================================== */
-const overlayReserva = document.getElementById('overlay-reserva');
-let mesaActivaId = null;
+function cerrarPanelDerecho(){
+  state.mesaSeleccionada = null;
+  document.getElementById('rp-placeholder').style.display = 'flex';
+  document.getElementById('rp-content').style.display = 'none';
+}
 
-function abrirModalReserva(mesaId){
-  mesaActivaId = mesaId;
+function renderRightPanel(){
+  const mesaId = state.mesaSeleccionada;
+  const placeholder = document.getElementById('rp-placeholder');
+  const content = document.getElementById('rp-content');
+  if(!mesaId || !state.mesas.find(m=>m.id===mesaId)){
+    placeholder.style.display = 'flex';
+    content.style.display = 'none';
+    return;
+  }
+  placeholder.style.display = 'none';
+  content.style.display = 'block';
+
+  if(state.modoEdicion){
+    renderRightPanelEdicion(mesaId, content);
+  } else {
+    renderRightPanelReserva(mesaId, content);
+  }
+}
+
+function renderRightPanelReserva(mesaId, content){
   const grupo = grupoDe(mesaId);
   const nombres = grupo.map(m=>m.nombre).join(' + ');
   const capacidadTotal = grupo.reduce((a,m)=>a+m.capacidad,0);
   const reserva = reservaDeMesa(mesaId);
-  const content = document.getElementById('reserva-modal-content');
 
   if(reserva){
     content.innerHTML = `
-      <h3>${escapeHtml(nombres)}</h3>
-      <p class="modal-sub">Reserva activa para el ${formatFechaLegible(state.fecha)}</p>
+      <div class="rp-header"><span class="rp-title">${escapeHtml(nombres)}</span><span class="rp-status-pill reservada">Reservada</span></div>
+      <div class="rp-sub">${formatFechaLegible(state.fecha)} ${grupo.length>1 ? '· mesas unidas' : ''}</div>
       <div class="info-row"><span>Cliente</span><span>${escapeHtml(reserva.cliente)}</span></div>
       <div class="info-row"><span>Hora</span><span>${escapeHtml(reserva.hora)}</span></div>
       <div class="info-row"><span>Personas</span><span>${escapeHtml(String(reserva.personas))}</span></div>
       ${reserva.notas ? `<div class="info-row"><span>Notas</span><span>${escapeHtml(reserva.notas)}</span></div>` : ''}
-      <div class="actions">
-        <button class="btn btn-ghost" data-close>Cerrar</button>
-        <button class="btn btn-danger" id="btn-cancelar-reserva">Cancelar reserva</button>
+      <div class="rp-actions">
+        <button class="btn btn-danger btn-block" id="btn-cancelar-reserva">Cancelar reserva</button>
+        <button class="btn btn-ghost btn-block" id="btn-deseleccionar">Cerrar</button>
       </div>
     `;
     content.querySelector('#btn-cancelar-reserva').addEventListener('click', async ()=>{
+      const ok = await confirmDialog('¿Cancelar la reserva de ' + reserva.cliente + '?');
+      if(!ok) return;
       try{
         await api('cancelReserva', { reserva_id: reserva.id });
         state.reservas = state.reservas.filter(r=>r.id !== reserva.id);
         toast('Reserva cancelada');
-        cerrarOverlays();
         render();
       }catch(err){ toast('Error: ' + err.message); }
     });
+    content.querySelector('#btn-deseleccionar').addEventListener('click', ()=>{ cerrarPanelDerecho(); });
   } else {
     content.innerHTML = `
-      <h3>${escapeHtml(nombres)}</h3>
-      <p class="modal-sub">Capacidad total: ${capacidadTotal} personas ${grupo.length>1 ? '(mesas unidas)' : ''}</p>
+      <div class="rp-header"><span class="rp-title">${escapeHtml(nombres)}</span><span class="rp-status-pill libre">Libre</span></div>
+      <div class="rp-sub">Capacidad total: ${capacidadTotal} personas ${grupo.length>1 ? '· mesas unidas' : ''}</div>
       <div class="field"><label>Nombre del cliente</label><input type="text" id="res-cliente" placeholder="Ej. Familia Pérez"></div>
       <div class="grid-2">
         <div class="field"><label>Hora</label><input type="time" id="res-hora" value="20:00"></div>
         <div class="field"><label>Personas</label><input type="number" id="res-personas" min="1" value="2"></div>
       </div>
       <div class="field"><label>Notas (opcional)</label><input type="text" id="res-notas" placeholder="Alergias, ocasión especial…"></div>
-      <div class="actions">
-        <button class="btn btn-ghost" data-close>Cancelar</button>
-        <button class="btn btn-primary" id="btn-guardar-reserva">Reservar</button>
+      <div class="rp-actions">
+        <button class="btn btn-primary btn-block" id="btn-guardar-reserva">Confirmar reserva</button>
+        ${grupo.length>1 ? '<button class="btn btn-ghost btn-block" id="btn-separar-desde-reserva">Separar estas mesas</button>' : ''}
       </div>
     `;
     content.querySelector('#btn-guardar-reserva').addEventListener('click', guardarReserva);
+    const sep = content.querySelector('#btn-separar-desde-reserva');
+    if(sep) sep.addEventListener('click', ()=> separarGrupo(mesaId));
   }
-  overlayReserva.classList.add('show');
 }
 
 async function guardarReserva(){
@@ -772,110 +1228,101 @@ async function guardarReserva(){
   const hora = document.getElementById('res-hora').value;
   const personas = document.getElementById('res-personas').value;
   const notas = document.getElementById('res-notas').value.trim();
-  if(!cliente || !hora || !personas){
-    toast('Completa nombre, hora y personas.');
-    return;
-  }
-  const grupo = grupoDe(mesaActivaId);
+  if(!cliente || !hora || !personas){ toast('Completa nombre, hora y personas.'); return; }
+  const grupo = grupoDe(state.mesaSeleccionada);
   const mesaIdField = grupo.map(m=>m.id).join(',');
   try{
     const data = await api('saveReserva', {
-      restaurante_id: state.restauranteId,
-      mesa_id: mesaIdField,
-      cliente, hora, personas, notas,
-      fecha: state.fecha,
+      restaurante_id: state.restauranteId, mesa_id: mesaIdField,
+      cliente, hora, personas, notas, fecha: state.fecha,
     });
     state.reservas.push({ id:data.id, restaurante_id:state.restauranteId, mesa_id:mesaIdField, cliente, fecha:state.fecha, hora, personas, notas, estado:'activa' });
     toast('Reserva creada');
-    cerrarOverlays();
     render();
-  }catch(err){
-    toast('Error al reservar: ' + err.message);
-  }
+  }catch(err){ toast('Error al reservar: ' + err.message); }
 }
 
-/* =====================================================================
-   MODAL: EDITAR / CREAR MESA
-===================================================================== */
-const overlayMesa = document.getElementById('overlay-mesa');
-let mesaEditandoId = null;
-
-function abrirModalMesa(mesaId){
-  mesaEditandoId = mesaId;
+/* ---------- Panel derecho en modo edición (estructura de mesa) ---------- */
+function renderRightPanelEdicion(mesaId, content){
   const mesa = state.mesas.find(m=>m.id===mesaId);
-  document.getElementById('mesa-modal-title').textContent = 'Editar mesa';
-  document.getElementById('mesa-numero').value = mesa.numero;
-  document.getElementById('mesa-nombre').value = mesa.nombre;
-  document.getElementById('mesa-capacidad').value = mesa.capacidad;
-  document.getElementById('mesa-forma').value = mesa.forma;
-  document.getElementById('btn-eliminar-mesa').style.display = 'inline-flex';
-  if(estaUnida(mesaId)){
-    document.getElementById('btn-eliminar-mesa').textContent = 'Separar mesas unidas';
-  } else {
-    document.getElementById('btn-eliminar-mesa').textContent = 'Eliminar mesa';
-  }
-  overlayMesa.classList.add('show');
-}
+  const unida = estaUnida(mesaId);
+  content.innerHTML = `
+    <div class="rp-header"><span class="rp-title">Editar mesa</span></div>
+    <div class="rp-sub">Arrastra la mesa en el plano para reposicionarla.</div>
+    <div class="grid-2">
+      <div class="field"><label>Número</label><input type="text" id="mesa-numero" value="${escapeHtml(mesa.numero)}"></div>
+      <div class="field"><label>Capacidad</label><input type="number" id="mesa-capacidad" min="1" value="${mesa.capacidad}"></div>
+    </div>
+    <div class="field"><label>Nombre para mostrar</label><input type="text" id="mesa-nombre" value="${escapeHtml(mesa.nombre)}"></div>
+    <div class="grid-2">
+      <div class="field"><label>Forma</label>
+        <select id="mesa-forma">
+          <option value="redonda" ${mesa.forma==='redonda'?'selected':''}>Redonda</option>
+          <option value="cuadrada" ${mesa.forma==='cuadrada'?'selected':''}>Cuadrada</option>
+        </select>
+      </div>
+      <div class="field"><label>Zona</label><input type="text" id="mesa-zona" value="${escapeHtml(mesa.zona || 'Salón Principal')}" list="zonas-list"></div>
+    </div>
+    <datalist id="zonas-list">${zonasDisponibles().map(z=>`<option value="${escapeHtml(z)}">`).join('')}</datalist>
+    <div class="rp-actions">
+      <button class="btn btn-primary btn-block" id="btn-guardar-mesa">Guardar cambios</button>
+      ${unida ? '<button class="btn btn-ghost btn-block" id="btn-separar-mesa">Separar de su pareja</button>' : ''}
+      <button class="btn btn-danger btn-block" id="btn-eliminar-mesa">Eliminar mesa</button>
+    </div>
+    <div class="rp-note">Los cambios se guardan directamente en tu Google Sheet.</div>
+  `;
 
-function abrirModalNuevaMesa(){
-  mesaEditandoId = null;
-  document.getElementById('mesa-modal-title').textContent = 'Nueva mesa';
-  document.getElementById('mesa-numero').value = String(state.mesas.length + 1);
-  document.getElementById('mesa-nombre').value = 'Mesa ' + (state.mesas.length + 1);
-  document.getElementById('mesa-capacidad').value = 2;
-  document.getElementById('mesa-forma').value = 'redonda';
-  document.getElementById('btn-eliminar-mesa').style.display = 'none';
-  overlayMesa.classList.add('show');
-}
-
-document.getElementById('btn-guardar-mesa').addEventListener('click', async ()=>{
-  const numero = document.getElementById('mesa-numero').value.trim();
-  const nombre = document.getElementById('mesa-nombre').value.trim() || ('Mesa ' + numero);
-  const capacidad = Number(document.getElementById('mesa-capacidad').value) || 2;
-  const forma = document.getElementById('mesa-forma').value;
-
-  if(mesaEditandoId){
-    const mesa = state.mesas.find(m=>m.id===mesaEditandoId);
-    mesa.numero = numero; mesa.nombre = nombre; mesa.capacidad = capacidad; mesa.forma = forma;
+  content.querySelector('#btn-guardar-mesa').addEventListener('click', async ()=>{
+    mesa.numero = document.getElementById('mesa-numero').value.trim();
+    mesa.nombre = document.getElementById('mesa-nombre').value.trim() || ('Mesa ' + mesa.numero);
+    mesa.capacidad = Number(document.getElementById('mesa-capacidad').value) || 2;
+    mesa.forma = document.getElementById('mesa-forma').value;
+    mesa.zona = document.getElementById('mesa-zona').value.trim() || 'Salón Principal';
     try{
       await api('saveMesa', { restaurante_id: state.restauranteId, mesa });
       toast('Mesa actualizada');
+      render();
     }catch(err){ toast('Error: ' + err.message); }
-  } else {
-    const nuevaMesa = { id:null, numero, nombre, capacidad, forma, pos_x:50, pos_y:50, unida_a:'' };
+  });
+
+  const sepBtn = content.querySelector('#btn-separar-mesa');
+  if(sepBtn) sepBtn.addEventListener('click', ()=> separarGrupo(mesaId));
+
+  content.querySelector('#btn-eliminar-mesa').addEventListener('click', async ()=>{
+    const ok = await confirmDialog('¿Eliminar "' + mesa.nombre + '"? Esta acción no se puede deshacer.');
+    if(!ok) return;
     try{
-      const data = await api('saveMesa', { restaurante_id: state.restauranteId, mesa: nuevaMesa });
-      nuevaMesa.id = data.id;
-      state.mesas.push(nuevaMesa);
-      toast('Mesa agregada. Arrástrala a su lugar.');
+      await api('deleteMesa', { restaurante_id: state.restauranteId, mesa_id: mesaId });
+      state.mesas = state.mesas.filter(m=>m.id !== mesaId);
+      toast('Mesa eliminada');
+      cerrarPanelDerecho();
+      render();
     }catch(err){ toast('Error: ' + err.message); }
-  }
-  cerrarOverlays();
-  render();
-});
+  });
+}
 
-document.getElementById('btn-eliminar-mesa').addEventListener('click', async ()=>{
-  if(!mesaEditandoId) return;
-  if(estaUnida(mesaEditandoId)){
-    await separarGrupo(mesaEditandoId);
-    cerrarOverlays();
-    return;
-  }
-  if(!confirm('¿Eliminar esta mesa? Esta acción no se puede deshacer.')) return;
+/* ---------- Crear mesa nueva ---------- */
+async function agregarMesaNueva(){
+  const numero = String(state.mesas.length + 1);
+  const nuevaMesa = {
+    id:null, numero, nombre:'Mesa ' + numero, capacidad:2, forma:'redonda',
+    pos_x:50, pos_y:50, unida_a:'',
+    zona: state.zonaActiva !== 'Todas' ? state.zonaActiva : (zonasDisponibles()[0] || 'Salón Principal'),
+  };
   try{
-    await api('deleteMesa', { restaurante_id: state.restauranteId, mesa_id: mesaEditandoId });
-    state.mesas = state.mesas.filter(m=>m.id !== mesaEditandoId);
-    toast('Mesa eliminada');
+    const data = await api('saveMesa', { restaurante_id: state.restauranteId, mesa: nuevaMesa });
+    nuevaMesa.id = data.id;
+    state.mesas.push(nuevaMesa);
+    state.modoEdicion = true;
+    state.mesaSeleccionada = nuevaMesa.id;
+    toast('Mesa agregada. Arrástrala a su lugar.');
+    render();
   }catch(err){ toast('Error: ' + err.message); }
-  cerrarOverlays();
-  render();
-});
-
-document.getElementById('btn-agregar-mesa').addEventListener('click', abrirModalNuevaMesa);
+}
+document.getElementById('btn-agregar-mesa').addEventListener('click', agregarMesaNueva);
 document.getElementById('btn-empty-agregar').addEventListener('click', ()=>{
   state.modoEdicion = true;
-  render();
-  abrirModalNuevaMesa();
+  agregarMesaNueva();
 });
 
 /* =====================================================================
@@ -893,20 +1340,6 @@ document.getElementById('btn-modo-union').addEventListener('click', ()=>{
   state.modoUnion = !state.modoUnion;
   state.seleccionUnion = [];
   render();
-});
-
-/* =====================================================================
-   OVERLAYS
-===================================================================== */
-function cerrarOverlays(){
-  overlayReserva.classList.remove('show');
-  overlayMesa.classList.remove('show');
-}
-document.querySelectorAll('[data-close]').forEach(el=>{
-  el.addEventListener('click', cerrarOverlays);
-});
-document.querySelectorAll('.overlay').forEach(ov=>{
-  ov.addEventListener('click', (e)=>{ if(e.target === ov) cerrarOverlays(); });
 });
 
 window.addEventListener('resize', renderUniones);
