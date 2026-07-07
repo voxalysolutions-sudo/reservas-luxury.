@@ -1181,8 +1181,9 @@ function renderRightPanelReserva(mesaId, content){
   if(reserva){
     content.innerHTML = `
       <div class="rp-header"><span class="rp-title">${escapeHtml(nombres)}</span><span class="rp-status-pill reservada">Reservada</span></div>
-      <div class="rp-sub">${formatFechaLegible(state.fecha)} ${grupo.length>1 ? '· mesas unidas' : ''}</div>
+      <div class="rp-sub">${formatFechaLegible(reserva.fecha)} ${grupo.length>1 ? '· mesas unidas' : ''}</div>
       <div class="info-row"><span>Cliente</span><span>${escapeHtml(reserva.cliente)}</span></div>
+      <div class="info-row"><span>Fecha</span><span>${escapeHtml(formatFechaLegible(reserva.fecha))}</span></div>
       <div class="info-row"><span>Hora</span><span>${escapeHtml(reserva.hora)}</span></div>
       <div class="info-row"><span>Personas</span><span>${escapeHtml(String(reserva.personas))}</span></div>
       ${reserva.notas ? `<div class="info-row"><span>Notas</span><span>${escapeHtml(reserva.notas)}</span></div>` : ''}
@@ -1208,9 +1209,10 @@ function renderRightPanelReserva(mesaId, content){
       <div class="rp-sub">Capacidad total: ${capacidadTotal} personas ${grupo.length>1 ? '· mesas unidas' : ''}</div>
       <div class="field"><label>Nombre del cliente</label><input type="text" id="res-cliente" placeholder="Ej. Familia Pérez"></div>
       <div class="grid-2">
+        <div class="field"><label>Fecha</label><input type="date" id="res-fecha" value="${escapeHtml(state.fecha)}"></div>
         <div class="field"><label>Hora</label><input type="time" id="res-hora" value="20:00"></div>
-        <div class="field"><label>Personas</label><input type="number" id="res-personas" min="1" value="2"></div>
       </div>
+      <div class="field"><label>Personas</label><input type="number" id="res-personas" min="1" value="2"></div>
       <div class="field"><label>Notas (opcional)</label><input type="text" id="res-notas" placeholder="Alergias, ocasión especial…"></div>
       <div class="rp-actions">
         <button class="btn btn-primary btn-block" id="btn-guardar-reserva">Confirmar reserva</button>
@@ -1225,20 +1227,27 @@ function renderRightPanelReserva(mesaId, content){
 
 async function guardarReserva(){
   const cliente = document.getElementById('res-cliente').value.trim();
+  const fecha = document.getElementById('res-fecha').value;
   const hora = document.getElementById('res-hora').value;
   const personas = document.getElementById('res-personas').value;
   const notas = document.getElementById('res-notas').value.trim();
-  if(!cliente || !hora || !personas){ toast('Completa nombre, hora y personas.'); return; }
+  if(!cliente || !fecha || !hora || !personas){ toast('Completa nombre, fecha, hora y personas.'); return; }
   const grupo = grupoDe(state.mesaSeleccionada);
   const mesaIdField = grupo.map(m=>m.id).join(',');
   try{
     const data = await api('saveReserva', {
       restaurante_id: state.restauranteId, mesa_id: mesaIdField,
-      cliente, hora, personas, notas, fecha: state.fecha,
+      cliente, hora, personas, notas, fecha,
     });
-    state.reservas.push({ id:data.id, restaurante_id:state.restauranteId, mesa_id:mesaIdField, cliente, fecha:state.fecha, hora, personas, notas, estado:'activa' });
-    toast('Reserva creada');
-    render();
+    if(fecha === state.fecha){
+      state.reservas.push({ id:data.id, restaurante_id:state.restauranteId, mesa_id:mesaIdField, cliente, fecha, hora, personas, notas, estado:'activa' });
+      toast('Reserva creada');
+      render();
+    } else {
+      toast('Reserva creada para el ' + formatFechaLegible(fecha) + '. Cambia la fecha arriba para verla.');
+      cerrarPanelDerecho();
+      render();
+    }
   }catch(err){ toast('Error al reservar: ' + err.message); }
 }
 
