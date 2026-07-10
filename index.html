@@ -196,6 +196,10 @@
   .verify-banner.error{background:var(--reserved-soft);border:1px solid var(--reserved);color:#7a2416;}
   @media (max-width:760px){ .login-wrap{grid-template-columns:1fr;} .login-showcase{display:none;} }
 
+  #public-screen{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  }
+
   /* ================= TUTORIAL (paso a paso al crear cuenta) ================= */
   #tutorial-view{display:none;}
   .tut-progress{display:flex;gap:6px;margin-bottom:22px;animation:riseIn .5s var(--ease) both;}
@@ -259,6 +263,11 @@
   .nav-btn.logout:hover{color:var(--reserved);background:var(--reserved-soft);}
   .nav-btn.danger-account{color:var(--text-faint);font-size:15px;}
   .nav-btn.danger-account:hover{color:var(--reserved);background:var(--reserved-soft);}
+  .nav-badge{
+    position:absolute;top:2px;right:2px;min-width:15px;height:15px;padding:0 3px;border-radius:8px;
+    background:var(--reserved);color:#fff;font-size:9.5px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;line-height:1;
+  }
 
   /* ---------- Left: timeline ---------- */
   #left-panel{
@@ -447,6 +456,64 @@
   }
   .zona-btn-wrap:hover .zona-del-btn{opacity:1;}
   .zona-del-btn:hover{color:var(--reserved);border-color:var(--reserved);}
+  /* ================= VISTA MÓVIL ================= */
+  #btn-mobile-menu{display:none;background:none;border:1px solid var(--border-strong);color:var(--text-dim);width:34px;height:34px;border-radius:8px;font-size:15px;cursor:pointer;}
+  #rp-mobile-close{display:none;}
+
+  @media (max-width: 880px){
+    #app{
+      grid-template-columns:1fr;
+      grid-template-rows:56px 1fr 60px;
+      grid-template-areas:"top" "center" "nav";
+    }
+    #btn-mobile-menu{display:flex;align-items:center;justify-content:center;}
+    #topbar{padding:0 14px;}
+    #topbar .brand{font-size:14.5px;}
+    #date-picker{padding:8px;font-size:12px;}
+    .user-chip span:not(.av){display:none;}
+
+    #nav{
+      grid-area:nav;flex-direction:row;justify-content:space-around;align-items:center;
+      padding:0 6px;border-right:none;border-top:1px solid var(--border);
+      width:100%;overflow-x:auto;
+    }
+    .nav-btn.logout{margin-top:0;}
+
+    #center-panel{grid-area:center;padding:12px;}
+    #zona-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+    .zona-btn{flex-shrink:0;}
+    #plano-legend{display:none;}
+
+    #left-panel{
+      position:fixed;top:56px;left:0;bottom:60px;width:82vw;max-width:320px;
+      transform:translateX(-100%);transition:transform .25s var(--ease);
+      z-index:80;box-shadow:12px 0 30px rgba(120,90,40,0.15);
+    }
+    #left-panel.drawer-open{transform:translateX(0);}
+
+    #right-panel{
+      position:fixed;left:0;right:0;bottom:60px;
+      max-height:75vh;border-left:none;border-top:1px solid var(--border);
+      border-radius:20px 20px 0 0;
+      transform:translateY(110%);transition:transform .28s var(--ease);
+      z-index:90;box-shadow:0 -12px 30px rgba(120,90,40,0.18);
+      padding-top:34px;
+    }
+    #right-panel.panel-open{transform:translateY(0);}
+    #rp-mobile-close{
+      display:flex;align-items:center;justify-content:center;
+      position:absolute;top:10px;right:14px;width:26px;height:26px;border-radius:50%;
+      background:var(--panel-2);border:1px solid var(--border-strong);color:var(--text-dim);
+      font-size:12px;cursor:pointer;
+    }
+
+    .login-wrap{max-width:100%;}
+  }
+
+  @media (max-width: 480px){
+    .grid-2{grid-template-columns:1fr;}
+    #left-panel{width:88vw;}
+  }
 </style>
 </head>
 <body>
@@ -498,8 +565,39 @@
           <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
         </div>
         <button class="btn btn-primary btn-block" id="btn-login">Entrar al plano →</button>
+        <div style="text-align:right;margin-top:10px;">
+          <button type="button" class="link-btn" id="link-to-forgot" style="font-size:12px;">¿Olvidaste tu contraseña?</button>
+        </div>
         <div class="login-hint">Cada restaurante tiene su propio usuario y contraseña, y solo ve sus propias mesas y reservas.<br><br><b>Demo:</b> usuario <b>demo</b> · contraseña <b>demo123</b><br><br>¿No tienes cuenta? <button type="button" class="link-btn" id="link-to-signup">Crea tu restaurante</button></div>
       </div>
+
+      <div id="forgot-view" style="display:none;">
+        <h2>Recuperar contraseña</h2>
+        <p class="sub">Escribe tu usuario y te enviaremos un enlace a tu correo para crear una nueva contraseña.</p>
+        <div class="login-error" id="forgot-error"></div>
+        <div class="field">
+          <label>Usuario</label>
+          <input type="text" id="forgot-usuario" placeholder="usuario" autocomplete="username">
+        </div>
+        <button class="btn btn-primary btn-block" id="btn-forgot">Enviar enlace</button>
+        <div class="login-hint"><button type="button" class="link-btn" id="link-forgot-to-login">← Volver a iniciar sesión</button></div>
+      </div>
+
+      <div id="resetpw-view" style="display:none;">
+        <h2>Crear nueva contraseña</h2>
+        <p class="sub">Elige una contraseña nueva para tu cuenta.</p>
+        <div class="login-error" id="resetpw-error"></div>
+        <div class="field">
+          <label>Contraseña nueva</label>
+          <input type="password" id="resetpw-password" placeholder="••••••••" autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label>Confirmar</label>
+          <input type="password" id="resetpw-password2" placeholder="••••••••" autocomplete="new-password">
+        </div>
+        <button class="btn btn-primary btn-block" id="btn-resetpw">Guardar nueva contraseña</button>
+      </div>
+
 
       <div id="tutorial-view">
         <div class="tut-progress">
@@ -591,17 +689,57 @@
   </div>
 </div>
 
+<!-- ==================== RESERVA PÚBLICA (sin cuenta) ==================== -->
+<div id="public-screen" style="display:none;">
+  <div class="login-wrap" style="grid-template-columns:1fr;max-width:460px;">
+    <div class="login-form-side">
+      <div class="mark">R</div>
+      <div id="public-form-view">
+        <h2 id="public-nombre-restaurante">Pedir una reserva</h2>
+        <p class="sub">Completa tus datos y el restaurante confirmará tu mesa lo antes posible.</p>
+        <div class="login-error" id="public-error"></div>
+        <div class="field"><label>Tu nombre</label><input type="text" id="public-cliente" placeholder="Ej. Familia Pérez"></div>
+        <div class="grid-2">
+          <div class="field"><label>Teléfono</label><input type="tel" id="public-telefono" placeholder="Opcional"></div>
+          <div class="field"><label>Correo</label><input type="email" id="public-email" placeholder="Opcional"></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>Fecha</label><input type="date" id="public-fecha"></div>
+          <div class="field"><label>Hora</label><input type="time" id="public-hora" value="20:00"></div>
+        </div>
+        <div class="field"><label>Personas</label><input type="number" id="public-personas" min="1" value="2"></div>
+        <div class="field"><label>Notas (opcional)</label><input type="text" id="public-notas" placeholder="Alergias, ocasión especial…"></div>
+        <button class="btn btn-primary btn-block" id="btn-public-enviar">Enviar solicitud →</button>
+      </div>
+      <div id="public-success-view" style="display:none;text-align:center;">
+        <div class="tut-icon" style="margin:0 auto 18px;">✅</div>
+        <h2>¡Solicitud enviada!</h2>
+        <p class="sub">El restaurante revisará tu pedido y te confirmará la mesa pronto. Puedes cerrar esta ventana.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ==================== APP ==================== -->
 <div id="app">
   <nav id="nav">
     <button class="nav-btn active" id="nav-plano" title="Plano de sala">▦</button>
     <button class="nav-btn" id="nav-edicion" title="Editar mesas">✎</button>
+    <button class="nav-btn" id="nav-solicitudes" title="Solicitudes pendientes" style="position:relative;">
+      🔔<span id="solicitudes-badge" class="nav-badge" style="display:none;">0</span>
+    </button>
+    <button class="nav-btn" id="nav-dashboard" title="Estadísticas">📊</button>
+    <button class="nav-btn" id="nav-share-link" title="Enlace público de reservas">🔗</button>
     <button class="nav-btn logout" id="nav-logout" title="Cerrar sesión">⏻</button>
+    <button class="nav-btn" id="nav-change-password" title="Cambiar contraseña">🔑</button>
     <button class="nav-btn danger-account" id="nav-delete-account" title="Eliminar mi cuenta">🗑</button>
   </nav>
 
   <header id="topbar">
-    <div class="brand"><span class="dot"></span> <span id="rest-title">Plano de Reservas</span></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button type="button" id="btn-mobile-menu" title="Reservas del día">☰</button>
+      <div class="brand"><span class="dot"></span> <span id="rest-title">Plano de Reservas</span></div>
+    </div>
     <div class="right">
       <input type="date" id="date-picker">
       <div class="user-chip"><span class="av" id="user-av">D</span><span id="user-label">usuario</span></div>
@@ -648,6 +786,7 @@
   </main>
 
   <aside id="right-panel">
+    <button type="button" id="rp-mobile-close" title="Cerrar">✕</button>
     <div class="rp-placeholder" id="rp-placeholder">
       <div class="big">✦</div>
       <p>Selecciona una mesa en el plano para ver o crear una reserva.</p>
@@ -679,6 +818,52 @@
   </div>
 </div>
 
+<div class="confirm-overlay" id="changepw-overlay">
+  <div class="confirm-box">
+    <p style="font-weight:600;color:var(--text);margin-bottom:14px;">Cambiar contraseña</p>
+    <div class="login-error" id="changepw-error"></div>
+    <div class="field"><label>Contraseña actual</label><input type="password" id="changepw-actual"></div>
+    <div class="field"><label>Contraseña nueva</label><input type="password" id="changepw-nueva"></div>
+    <div class="actions">
+      <button class="btn btn-ghost" id="changepw-cancel">Cancelar</button>
+      <button class="btn btn-primary" id="changepw-ok">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="share-overlay">
+  <div class="confirm-box" style="max-width:380px;">
+    <p style="font-weight:600;color:var(--text);margin-bottom:6px;">Enlace público de reservas</p>
+    <p style="font-size:12.5px;">Comparte este enlace con tus clientes para que pidan su reserva sin necesidad de una cuenta. Tú la asignas a una mesa desde "Solicitudes".</p>
+    <div class="field"><input type="text" id="share-link-input" readonly></div>
+    <div class="actions">
+      <button class="btn btn-ghost" id="share-cerrar">Cerrar</button>
+      <button class="btn btn-primary" id="share-copiar">Copiar enlace</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="dashboard-overlay">
+  <div class="confirm-box" style="max-width:640px;width:100%;max-height:82vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+      <p style="font-weight:600;color:var(--text);font-family:'Fraunces',serif;font-size:19px;margin:0;">Estadísticas</p>
+      <button class="btn btn-ghost btn-sm" id="dashboard-cerrar">Cerrar ✕</button>
+    </div>
+    <div id="dashboard-body">Cargando…</div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="solicitudes-overlay">
+  <div class="confirm-box" style="max-width:480px;width:100%;max-height:82vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <p style="font-weight:600;color:var(--text);font-family:'Fraunces',serif;font-size:19px;margin:0;">Solicitudes pendientes</p>
+      <button class="btn btn-ghost btn-sm" id="solicitudes-cerrar">Cerrar ✕</button>
+    </div>
+    <p style="font-size:12px;color:var(--text-faint);margin:0 0 16px;">Pedidos hechos por clientes desde tu enlace público. Asígnales una mesa para confirmarlos.</p>
+    <div id="solicitudes-body">Cargando…</div>
+  </div>
+</div>
+
 <script>
 /* =====================================================================
    CONFIGURACIÓN
@@ -703,6 +888,9 @@ const state = {
   zonaActiva: 'Todas',
   mesaSeleccionada: null,
   busqueda: '',
+  editandoReserva: null,
+  modoAsignacion: null,
+  solicitudesPendientes: [],
 };
 
 function todayISO(){
@@ -752,6 +940,62 @@ async function api(action, payload){
   }
   return data;
 }
+
+/* =====================================================================
+   RESERVA PÚBLICA (enlace ?reservar=ID, sin necesidad de cuenta)
+===================================================================== */
+const paramsGlobales = new URLSearchParams(window.location.search);
+const restauranteIdPublico = paramsGlobales.get('reservar');
+
+if(restauranteIdPublico){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('public-screen').style.display = 'flex';
+  document.getElementById('public-fecha').value = todayISO();
+  cargarInfoPublica();
+}
+
+async function cargarInfoPublica(){
+  try{
+    const data = await api('getInfoPublica', { restaurante_id: restauranteIdPublico });
+    document.getElementById('public-nombre-restaurante').textContent = 'Reservar en ' + data.nombre_restaurante;
+  }catch(err){
+    document.getElementById('public-error').textContent = 'No encontramos este restaurante. Verifica el enlace.';
+    document.getElementById('public-error').style.display = 'block';
+    document.getElementById('btn-public-enviar').disabled = true;
+  }
+}
+
+document.getElementById('btn-public-enviar').addEventListener('click', async ()=>{
+  const cliente = document.getElementById('public-cliente').value.trim();
+  const telefono = document.getElementById('public-telefono').value.trim();
+  const email = document.getElementById('public-email').value.trim();
+  const fecha = document.getElementById('public-fecha').value;
+  const hora = document.getElementById('public-hora').value;
+  const personas = document.getElementById('public-personas').value;
+  const notas = document.getElementById('public-notas').value.trim();
+  const errBox = document.getElementById('public-error');
+  errBox.style.display = 'none';
+
+  if(!cliente || !fecha || !hora || !personas){
+    errBox.textContent = 'Completa tu nombre, fecha, hora y cantidad de personas.';
+    errBox.style.display = 'block';
+    return;
+  }
+  const btn = document.getElementById('btn-public-enviar');
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  try{
+    await api('crearSolicitudPublica', {
+      restaurante_id: restauranteIdPublico, cliente, telefono, email, fecha, hora, personas, notas,
+    });
+    document.getElementById('public-form-view').style.display = 'none';
+    document.getElementById('public-success-view').style.display = 'block';
+  }catch(err){
+    errBox.textContent = err.message || 'No se pudo enviar tu solicitud.';
+    errBox.style.display = 'block';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Enviar solicitud →';
+  }
+});
 
 function toast(msg){
   const t = document.getElementById('toast');
@@ -819,27 +1063,112 @@ function mostrarBannerVerificacion(msg, ok){
   el.className = 'verify-banner show ' + (ok ? 'ok' : 'error');
 }
 
-/* Si la persona llegó desde el enlace del correo de verificación
-   (?verificar=ID&token=XXX), confirmamos la cuenta automáticamente. */
-(async function manejarVerificacionDesdeLink(){
+let resetPwData = null; // { restauranteId, token } cuando se llega desde el enlace de recuperación
+
+/* Router de enlaces especiales que llegan por la URL:
+   ?verificar=ID&token=XXX  -> confirma la cuenta
+   ?reset=ID&token=XXX      -> muestra el formulario de nueva contraseña   */
+(async function manejarEnlacesEspeciales(){
   const params = new URLSearchParams(window.location.search);
   const restauranteId = params.get('verificar');
   const token = params.get('token');
-  if(!restauranteId || !token) return;
-  try{
-    const data = await api('verificarCuenta', { restaurante_id: restauranteId, token });
-    mostrarBannerVerificacion(
-      data.ya_estaba
-        ? 'Esta cuenta ya estaba verificada. Ya puedes iniciar sesión.'
-        : '¡Tu cuenta "' + data.nombre_restaurante + '" quedó verificada! Ya puedes iniciar sesión.',
-      true
-    );
-  }catch(err){
-    mostrarBannerVerificacion(err.message || 'No se pudo verificar la cuenta.', false);
+  const resetId = params.get('reset');
+
+  if(restauranteId && token){
+    try{
+      const data = await api('verificarCuenta', { restaurante_id: restauranteId, token });
+      mostrarBannerVerificacion(
+        data.ya_estaba
+          ? 'Esta cuenta ya estaba verificada. Ya puedes iniciar sesión.'
+          : '¡Tu cuenta "' + data.nombre_restaurante + '" quedó verificada! Ya puedes iniciar sesión.',
+        true
+      );
+    }catch(err){
+      mostrarBannerVerificacion(err.message || 'No se pudo verificar la cuenta.', false);
+    }
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+    return;
   }
-  const cleanUrl = window.location.origin + window.location.pathname;
-  window.history.replaceState({}, document.title, cleanUrl);
+
+  if(resetId && token){
+    resetPwData = { restauranteId: resetId, token };
+    document.getElementById('login-view').style.display = 'none';
+    document.getElementById('resetpw-view').style.display = 'block';
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
 })();
+
+/* ---------- Olvidé mi contraseña ---------- */
+document.getElementById('link-to-forgot').addEventListener('click', ()=>{
+  document.getElementById('login-view').style.display = 'none';
+  document.getElementById('forgot-view').style.display = 'block';
+});
+document.getElementById('link-forgot-to-login').addEventListener('click', ()=>{
+  document.getElementById('forgot-view').style.display = 'none';
+  document.getElementById('login-view').style.display = 'block';
+});
+
+document.getElementById('btn-forgot').addEventListener('click', async ()=>{
+  const usuario = document.getElementById('forgot-usuario').value.trim();
+  const errBox = document.getElementById('forgot-error');
+  errBox.style.display = 'none';
+  if(!usuario){
+    errBox.textContent = 'Escribe tu usuario.';
+    errBox.style.display = 'block';
+    return;
+  }
+  const btn = document.getElementById('btn-forgot');
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  try{
+    await api('solicitarRecuperacion', { usuario });
+    document.getElementById('forgot-view').style.display = 'none';
+    document.getElementById('login-view').style.display = 'block';
+    mostrarBannerVerificacion('Si el usuario existe, te enviamos un correo con instrucciones para restablecer tu contraseña.', true);
+  }catch(err){
+    errBox.textContent = err.message || 'No se pudo procesar la solicitud.';
+    errBox.style.display = 'block';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Enviar enlace';
+  }
+});
+
+/* ---------- Crear nueva contraseña (desde el enlace del correo) ---------- */
+document.getElementById('btn-resetpw').addEventListener('click', async ()=>{
+  const p1 = document.getElementById('resetpw-password').value;
+  const p2 = document.getElementById('resetpw-password2').value;
+  const errBox = document.getElementById('resetpw-error');
+  errBox.style.display = 'none';
+  if(!resetPwData){
+    errBox.textContent = 'Este enlace no es válido.';
+    errBox.style.display = 'block';
+    return;
+  }
+  if(p1.length < 4){
+    errBox.textContent = 'La contraseña debe tener al menos 4 caracteres.';
+    errBox.style.display = 'block';
+    return;
+  }
+  if(p1 !== p2){
+    errBox.textContent = 'Las contraseñas no coinciden.';
+    errBox.style.display = 'block';
+    return;
+  }
+  const btn = document.getElementById('btn-resetpw');
+  btn.disabled = true; btn.textContent = 'Guardando…';
+  try{
+    await api('restablecerPassword', { restaurante_id: resetPwData.restauranteId, token: resetPwData.token, password_nueva: p1 });
+    document.getElementById('resetpw-view').style.display = 'none';
+    document.getElementById('login-view').style.display = 'block';
+    mostrarBannerVerificacion('¡Contraseña actualizada! Ya puedes iniciar sesión.', true);
+  }catch(err){
+    errBox.textContent = err.message || 'No se pudo cambiar la contraseña.';
+    errBox.style.display = 'block';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Guardar nueva contraseña';
+  }
+});
 
 /* =====================================================================
    LOGIN
@@ -923,6 +1252,242 @@ async function eliminarCuentaFlow(){
     setTimeout(()=> location.reload(), 1400);
   }catch(err){
     toast('Error: ' + err.message);
+  }
+}
+
+/* =====================================================================
+   CAMBIAR CONTRASEÑA (desde dentro de la app)
+===================================================================== */
+document.getElementById('nav-change-password').addEventListener('click', ()=>{
+  document.getElementById('changepw-actual').value = '';
+  document.getElementById('changepw-nueva').value = '';
+  document.getElementById('changepw-error').style.display = 'none';
+  document.getElementById('changepw-overlay').classList.add('show');
+});
+document.getElementById('changepw-cancel').addEventListener('click', ()=>{
+  document.getElementById('changepw-overlay').classList.remove('show');
+});
+document.getElementById('changepw-ok').addEventListener('click', async ()=>{
+  const actual = document.getElementById('changepw-actual').value;
+  const nueva = document.getElementById('changepw-nueva').value;
+  const errBox = document.getElementById('changepw-error');
+  errBox.style.display = 'none';
+  if(!actual || !nueva){
+    errBox.textContent = 'Completa ambos campos.';
+    errBox.style.display = 'block';
+    return;
+  }
+  if(nueva.length < 4){
+    errBox.textContent = 'La contraseña nueva debe tener al menos 4 caracteres.';
+    errBox.style.display = 'block';
+    return;
+  }
+  try{
+    await api('cambiarPassword', { restaurante_id: state.restauranteId, password_actual: actual, password_nueva: nueva });
+    document.getElementById('changepw-overlay').classList.remove('show');
+    toast('Contraseña actualizada');
+  }catch(err){
+    errBox.textContent = err.message || 'No se pudo cambiar la contraseña.';
+    errBox.style.display = 'block';
+  }
+});
+
+/* =====================================================================
+   ENLACE PÚBLICO DE RESERVAS
+===================================================================== */
+document.getElementById('nav-share-link').addEventListener('click', ()=>{
+  const link = window.location.origin + window.location.pathname + '?reservar=' + encodeURIComponent(state.restauranteId);
+  document.getElementById('share-link-input').value = link;
+  document.getElementById('share-overlay').classList.add('show');
+});
+document.getElementById('share-cerrar').addEventListener('click', ()=>{
+  document.getElementById('share-overlay').classList.remove('show');
+});
+document.getElementById('share-copiar').addEventListener('click', async ()=>{
+  const input = document.getElementById('share-link-input');
+  input.select();
+  try{
+    await navigator.clipboard.writeText(input.value);
+    toast('Enlace copiado');
+  }catch(err){
+    document.execCommand('copy');
+    toast('Enlace copiado');
+  }
+});
+
+/* =====================================================================
+   DASHBOARD DE ESTADÍSTICAS
+===================================================================== */
+document.getElementById('nav-dashboard').addEventListener('click', abrirDashboard);
+document.getElementById('dashboard-cerrar').addEventListener('click', ()=>{
+  document.getElementById('dashboard-overlay').classList.remove('show');
+});
+
+async function abrirDashboard(){
+  const overlay = document.getElementById('dashboard-overlay');
+  const body = document.getElementById('dashboard-body');
+  body.innerHTML = 'Cargando…';
+  overlay.classList.add('show');
+  try{
+    const data = await api('getEstadisticas', { restaurante_id: state.restauranteId });
+    const maxHora = Math.max(1, ...data.top_horas.map(h=>h.total));
+    const maxZona = Math.max(1, ...data.por_zona.map(z=>z.total));
+    body.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">
+        <div class="rp-note" style="margin:0;">
+          <div style="font-size:26px;font-family:'Fraunces',serif;color:var(--gold-deep);">${data.reservas_hoy}</div>
+          <div style="font-size:11.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;">Reservas hoy</div>
+        </div>
+        <div class="rp-note" style="margin:0;">
+          <div style="font-size:26px;font-family:'Fraunces',serif;color:var(--gold-deep);">${data.reservas_7_dias}</div>
+          <div style="font-size:11.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;">Próximos 7 días</div>
+        </div>
+        <div class="rp-note" style="margin:0;">
+          <div style="font-size:26px;font-family:'Fraunces',serif;color:var(--free);">${data.ocupacion_hoy_pct}%</div>
+          <div style="font-size:11.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;">Ocupación hoy</div>
+        </div>
+        <div class="rp-note" style="margin:0;">
+          <div style="font-size:26px;font-family:'Fraunces',serif;color:var(--reserved);">${data.solicitudes_pendientes}</div>
+          <div style="font-size:11.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;">Solicitudes pendientes</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:22px;">
+        <div class="list-title" style="margin-top:0;">Horas más pedidas</div>
+        ${data.top_horas.length === 0 ? '<p style="font-size:12.5px;color:var(--text-faint);">Todavía no hay suficientes reservas.</p>' :
+          data.top_horas.map(h => `
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+              <span class="mono" style="width:52px;font-size:12px;color:var(--text-dim);">${escapeHtml(h.hora)}</span>
+              <div style="flex:1;background:var(--panel-2);border-radius:6px;height:10px;overflow:hidden;">
+                <div style="height:100%;border-radius:6px;background:linear-gradient(90deg,var(--gold-bright),var(--gold));width:${Math.round(h.total/maxHora*100)}%;"></div>
+              </div>
+              <span class="mono" style="width:20px;font-size:12px;color:var(--text-faint);text-align:right;">${h.total}</span>
+            </div>
+          `).join('')}
+      </div>
+
+      <div>
+        <div class="list-title">Reservas por zona (próx. 30 días)</div>
+        ${data.por_zona.length === 0 ? '<p style="font-size:12.5px;color:var(--text-faint);">Todavía no hay suficientes reservas.</p>' :
+          data.por_zona.map(z => `
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+              <span style="width:110px;font-size:12px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(z.zona)}</span>
+              <div style="flex:1;background:var(--panel-2);border-radius:6px;height:10px;overflow:hidden;">
+                <div style="height:100%;border-radius:6px;background:linear-gradient(90deg,var(--free),#2f7350);width:${Math.round(z.total/maxZona*100)}%;"></div>
+              </div>
+              <span class="mono" style="width:20px;font-size:12px;color:var(--text-faint);text-align:right;">${z.total}</span>
+            </div>
+          `).join('')}
+      </div>
+    `;
+  }catch(err){
+    body.innerHTML = '<p style="color:var(--reserved);font-size:13px;">Error al cargar estadísticas: ' + escapeHtml(err.message) + '</p>';
+  }
+}
+
+/* =====================================================================
+   SOLICITUDES PENDIENTES (reservas públicas sin mesa asignada)
+===================================================================== */
+async function actualizarBadgeSolicitudes(){
+  try{
+    const data = await api('getSolicitudesPendientes', { restaurante_id: state.restauranteId });
+    state.solicitudesPendientes = data.solicitudes;
+    const badge = document.getElementById('solicitudes-badge');
+    if(data.solicitudes.length > 0){
+      badge.textContent = data.solicitudes.length > 9 ? '9+' : String(data.solicitudes.length);
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }catch(err){ /* silencioso: no interrumpir la carga normal de la app */ }
+}
+
+document.getElementById('nav-solicitudes').addEventListener('click', abrirSolicitudes);
+document.getElementById('solicitudes-cerrar').addEventListener('click', ()=>{
+  document.getElementById('solicitudes-overlay').classList.remove('show');
+});
+
+async function abrirSolicitudes(){
+  const overlay = document.getElementById('solicitudes-overlay');
+  const body = document.getElementById('solicitudes-body');
+  body.innerHTML = 'Cargando…';
+  overlay.classList.add('show');
+  try{
+    const data = await api('getSolicitudesPendientes', { restaurante_id: state.restauranteId });
+    state.solicitudesPendientes = data.solicitudes;
+    renderSolicitudesBody();
+  }catch(err){
+    body.innerHTML = '<p style="color:var(--reserved);font-size:13px;">Error: ' + escapeHtml(err.message) + '</p>';
+  }
+}
+
+function renderSolicitudesBody(){
+  const body = document.getElementById('solicitudes-body');
+  if(state.solicitudesPendientes.length === 0){
+    body.innerHTML = '<p style="font-size:13px;color:var(--text-faint);text-align:center;padding:20px 0;">No hay solicitudes pendientes por ahora.</p>';
+    return;
+  }
+  body.innerHTML = state.solicitudesPendientes.map(s => `
+    <div class="res-card" style="cursor:default;margin-bottom:10px;">
+      <div class="res-row1"><span>${escapeHtml(s.cliente)}</span><span class="res-time-badge">${escapeHtml(s.hora)}</span></div>
+      <div class="res-row2"><span>${escapeHtml(formatFechaLegible(s.fecha))}</span><span>${escapeHtml(String(s.personas))}p</span></div>
+      ${s.telefono ? `<div class="res-row2" style="margin-top:4px;"><span>📞 ${escapeHtml(s.telefono)}</span></div>` : ''}
+      ${s.notas ? `<div class="res-row2" style="margin-top:4px;"><span>${escapeHtml(s.notas)}</span></div>` : ''}
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="btn btn-primary btn-sm" style="flex:1;" data-asignar="${s.id}">Asignar mesa</button>
+        <button class="btn btn-ghost btn-sm" data-descartar="${s.id}">Descartar</button>
+      </div>
+    </div>
+  `).join('');
+
+  body.querySelectorAll('[data-asignar]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const solicitud = state.solicitudesPendientes.find(s=>s.id === btn.dataset.asignar);
+      if(!solicitud) return;
+      state.modoAsignacion = solicitud;
+      document.getElementById('solicitudes-overlay').classList.remove('show');
+      if(solicitud.fecha !== state.fecha){
+        document.getElementById('date-picker').value = solicitud.fecha;
+        state.fecha = solicitud.fecha;
+        cargarReservas();
+      }
+      toast('Elige una mesa libre en el plano para asignarla a ' + solicitud.cliente);
+    });
+  });
+  body.querySelectorAll('[data-descartar]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const ok = await confirmDialog('¿Descartar esta solicitud? El cliente no será asignado a ninguna mesa.');
+      if(!ok) return;
+      try{
+        await api('cancelReserva', { reserva_id: btn.dataset.descartar });
+        state.solicitudesPendientes = state.solicitudesPendientes.filter(s=>s.id !== btn.dataset.descartar);
+        renderSolicitudesBody();
+        actualizarBadgeSolicitudes();
+        toast('Solicitud descartada');
+      }catch(err){ toast('Error: ' + err.message); }
+    });
+  });
+}
+
+async function asignarMesaASolicitud(mesaId){
+  const solicitud = state.modoAsignacion;
+  if(!solicitud) return;
+  if(reservaDeMesa(mesaId)){
+    toast('Esa mesa ya está reservada para este día. Elige otra.');
+    return;
+  }
+  try{
+    await api('actualizarReserva', { reserva_id: solicitud.id, mesa_id: mesaId, estado: 'activa' });
+    state.solicitudesPendientes = state.solicitudesPendientes.filter(s=>s.id !== solicitud.id);
+    actualizarBadgeSolicitudes();
+    if(solicitud.fecha === state.fecha){
+      state.reservas.push(Object.assign({}, solicitud, { mesa_id: mesaId, estado: 'activa' }));
+    }
+    state.modoAsignacion = null;
+    toast('Mesa asignada a ' + solicitud.cliente);
+    render();
+  }catch(err){
+    toast('Error al asignar: ' + err.message);
   }
 }
 
@@ -1065,6 +1630,7 @@ async function doSignup(){
 async function cargarTodo(){
   await Promise.all([cargarMesas(), cargarReservas()]);
   render();
+  actualizarBadgeSolicitudes();
 }
 
 async function cargarMesas(){
@@ -1083,6 +1649,11 @@ document.getElementById('date-picker').addEventListener('change', async (e)=>{
   cerrarPanelDerecho();
   render();
 });
+
+document.getElementById('btn-mobile-menu').addEventListener('click', ()=>{
+  document.getElementById('left-panel').classList.toggle('drawer-open');
+});
+document.getElementById('rp-mobile-close').addEventListener('click', cerrarPanelDerecho);
 
 document.getElementById('search-input').addEventListener('input', (e)=>{
   state.busqueda = e.target.value.trim().toLowerCase();
@@ -1118,6 +1689,21 @@ function render(){
   renderPlano();
   renderLeftList();
   renderRightPanel();
+  renderEstadoBanner();
+}
+
+function renderEstadoBanner(){
+  const txt = document.getElementById('zona-status-text');
+  const wrap = document.getElementById('zona-status');
+  if(state.modoAsignacion){
+    txt.innerHTML = 'Elige una mesa libre para <b>' + escapeHtml(state.modoAsignacion.cliente) + '</b> · <button type="button" class="link-btn" id="btn-cancelar-asignacion" style="font-size:11.5px;">Cancelar</button>';
+    wrap.querySelector('.live').style.background = 'var(--merged)';
+    const cancelBtn = document.getElementById('btn-cancelar-asignacion');
+    if(cancelBtn) cancelBtn.addEventListener('click', ()=>{ state.modoAsignacion = null; render(); });
+  } else {
+    txt.textContent = 'Sincronizado con Sheets';
+    wrap.querySelector('.live').style.background = 'var(--free)';
+  }
 }
 
 function zonasDisponibles(){
@@ -1326,6 +1912,7 @@ function renderLeftList(){
       const mesa = state.mesas.find(m=>m.id===mesaIds[0]);
       if(mesa) state.zonaActiva = 'Todas';
       state.mesaSeleccionada = mesaIds[0];
+      document.getElementById('left-panel').classList.remove('drawer-open');
       render();
     });
     list.appendChild(item);
@@ -1344,6 +1931,7 @@ function formatFechaLegible(iso){
    INTERACCIÓN CON MESAS
 ===================================================================== */
 function onClickMesa(mesaId){
+  if(state.modoAsignacion){ asignarMesaASolicitud(mesaId); return; }
   if(state.modoUnion){ toggleSeleccionUnion(mesaId); return; }
   state.mesaSeleccionada = mesaId;
   render();
@@ -1422,6 +2010,7 @@ function habilitarArrastre(div, mesa){
 ===================================================================== */
 function cerrarPanelDerecho(){
   state.mesaSeleccionada = null;
+  state.editandoReserva = null;
   document.getElementById('rp-placeholder').style.display = 'flex';
   document.getElementById('rp-content').style.display = 'none';
 }
@@ -1430,13 +2019,16 @@ function renderRightPanel(){
   const mesaId = state.mesaSeleccionada;
   const placeholder = document.getElementById('rp-placeholder');
   const content = document.getElementById('rp-content');
+  const panel = document.getElementById('right-panel');
   if(!mesaId || !state.mesas.find(m=>m.id===mesaId)){
     placeholder.style.display = 'flex';
     content.style.display = 'none';
+    panel.classList.remove('panel-open');
     return;
   }
   placeholder.style.display = 'none';
   content.style.display = 'block';
+  panel.classList.add('panel-open');
 
   if(state.modoEdicion){
     renderRightPanelEdicion(mesaId, content);
@@ -1451,6 +2043,27 @@ function renderRightPanelReserva(mesaId, content){
   const capacidadTotal = grupo.reduce((a,m)=>a+m.capacidad,0);
   const reserva = reservaDeMesa(mesaId);
 
+  if(reserva && state.editandoReserva === reserva.id){
+    content.innerHTML = `
+      <div class="rp-header"><span class="rp-title">${escapeHtml(nombres)}</span><span class="rp-status-pill reservada">Editando</span></div>
+      <div class="rp-sub">${grupo.length>1 ? 'Mesas unidas' : ''}</div>
+      <div class="field"><label>Nombre del cliente</label><input type="text" id="res-cliente" value="${escapeHtml(reserva.cliente)}"></div>
+      <div class="grid-2">
+        <div class="field"><label>Fecha</label><input type="date" id="res-fecha" value="${escapeHtml(reserva.fecha)}"></div>
+        <div class="field"><label>Hora</label><input type="time" id="res-hora" value="${escapeHtml(reserva.hora)}"></div>
+      </div>
+      <div class="field"><label>Personas</label><input type="number" id="res-personas" min="1" value="${escapeHtml(String(reserva.personas))}"></div>
+      <div class="field"><label>Notas (opcional)</label><input type="text" id="res-notas" value="${escapeHtml(reserva.notas||'')}"></div>
+      <div class="rp-actions">
+        <button class="btn btn-primary btn-block" id="btn-guardar-edicion">Guardar cambios</button>
+        <button class="btn btn-ghost btn-block" id="btn-cancelar-edicion">Cancelar edición</button>
+      </div>
+    `;
+    content.querySelector('#btn-guardar-edicion').addEventListener('click', ()=> guardarEdicionReserva(reserva.id));
+    content.querySelector('#btn-cancelar-edicion').addEventListener('click', ()=>{ state.editandoReserva = null; render(); });
+    return;
+  }
+
   if(reserva){
     content.innerHTML = `
       <div class="rp-header"><span class="rp-title">${escapeHtml(nombres)}</span><span class="rp-status-pill reservada">Reservada</span></div>
@@ -1459,12 +2072,15 @@ function renderRightPanelReserva(mesaId, content){
       <div class="info-row"><span>Fecha</span><span>${escapeHtml(formatFechaLegible(reserva.fecha))}</span></div>
       <div class="info-row"><span>Hora</span><span>${escapeHtml(reserva.hora)}</span></div>
       <div class="info-row"><span>Personas</span><span>${escapeHtml(String(reserva.personas))}</span></div>
+      ${reserva.telefono ? `<div class="info-row"><span>Teléfono</span><span>${escapeHtml(reserva.telefono)}</span></div>` : ''}
       ${reserva.notas ? `<div class="info-row"><span>Notas</span><span>${escapeHtml(reserva.notas)}</span></div>` : ''}
       <div class="rp-actions">
+        <button class="btn btn-ghost btn-block" id="btn-editar-reserva">Editar reserva</button>
         <button class="btn btn-danger btn-block" id="btn-cancelar-reserva">Cancelar reserva</button>
         <button class="btn btn-ghost btn-block" id="btn-deseleccionar">Cerrar</button>
       </div>
     `;
+    content.querySelector('#btn-editar-reserva').addEventListener('click', ()=>{ state.editandoReserva = reserva.id; render(); });
     content.querySelector('#btn-cancelar-reserva').addEventListener('click', async ()=>{
       const ok = await confirmDialog('¿Cancelar la reserva de ' + reserva.cliente + '?');
       if(!ok) return;
@@ -1496,6 +2112,30 @@ function renderRightPanelReserva(mesaId, content){
     const sep = content.querySelector('#btn-separar-desde-reserva');
     if(sep) sep.addEventListener('click', ()=> separarGrupo(mesaId));
   }
+}
+
+async function guardarEdicionReserva(reservaId){
+  const cliente = document.getElementById('res-cliente').value.trim();
+  const fecha = document.getElementById('res-fecha').value;
+  const hora = document.getElementById('res-hora').value;
+  const personas = document.getElementById('res-personas').value;
+  const notas = document.getElementById('res-notas').value.trim();
+  if(!cliente || !fecha || !hora || !personas){ toast('Completa nombre, fecha, hora y personas.'); return; }
+  try{
+    await api('actualizarReserva', { reserva_id: reservaId, cliente, fecha, hora, personas, notas });
+    state.editandoReserva = null;
+    if(fecha === state.fecha){
+      const idx = state.reservas.findIndex(r=>r.id===reservaId);
+      if(idx>=0) state.reservas[idx] = Object.assign({}, state.reservas[idx], { cliente, fecha, hora, personas, notas });
+      toast('Reserva actualizada');
+      render();
+    } else {
+      state.reservas = state.reservas.filter(r=>r.id!==reservaId);
+      toast('Reserva movida al ' + formatFechaLegible(fecha) + '.');
+      cerrarPanelDerecho();
+      render();
+    }
+  }catch(err){ toast('Error al guardar: ' + err.message); }
 }
 
 async function guardarReserva(){
@@ -1611,11 +2251,11 @@ document.getElementById('btn-empty-agregar').addEventListener('click', ()=>{
    NAV / MODO EDICIÓN / UNIÓN
 ===================================================================== */
 document.getElementById('nav-plano').addEventListener('click', ()=>{
-  state.modoEdicion = false; state.modoUnion = false; state.seleccionUnion = [];
+  state.modoEdicion = false; state.modoUnion = false; state.seleccionUnion = []; state.modoAsignacion = null;
   render();
 });
 document.getElementById('nav-edicion').addEventListener('click', ()=>{
-  state.modoEdicion = true;
+  state.modoEdicion = true; state.modoAsignacion = null;
   render();
 });
 document.getElementById('btn-modo-union').addEventListener('click', ()=>{
