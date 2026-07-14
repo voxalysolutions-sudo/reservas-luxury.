@@ -2053,7 +2053,10 @@ function renderRightPanelReserva(mesaId, content){
         <div class="field"><label>Hora</label><input type="time" id="res-hora" value="${escapeHtml(reserva.hora)}"></div>
       </div>
       <div class="field"><label>Personas</label><input type="number" id="res-personas" min="1" value="${escapeHtml(String(reserva.personas))}"></div>
-      <div class="field"><label>Teléfono (opcional, para WhatsApp)</label><input type="tel" id="res-telefono" value="${escapeHtml(reserva.telefono||'')}"></div>
+      <div class="grid-2">
+        <div class="field"><label>Teléfono (opcional)</label><input type="tel" id="res-telefono" value="${escapeHtml(reserva.telefono||'')}"></div>
+        <div class="field"><label>Correo (para avisarle)</label><input type="email" id="res-email" value="${escapeHtml(reserva.email||'')}"></div>
+      </div>
       <div class="field"><label>Notas (opcional)</label><input type="text" id="res-notas" value="${escapeHtml(reserva.notas||'')}"></div>
       <div class="rp-actions">
         <button class="btn btn-primary btn-block" id="btn-guardar-edicion">Guardar cambios</button>
@@ -2074,6 +2077,7 @@ function renderRightPanelReserva(mesaId, content){
       <div class="info-row"><span>Hora</span><span>${escapeHtml(reserva.hora)}</span></div>
       <div class="info-row"><span>Personas</span><span>${escapeHtml(String(reserva.personas))}</span></div>
       ${reserva.telefono ? `<div class="info-row"><span>Teléfono</span><span>${escapeHtml(reserva.telefono)}</span></div>` : ''}
+      ${reserva.email ? `<div class="info-row"><span>Correo</span><span>${escapeHtml(reserva.email)}</span></div>` : ''}
       ${reserva.notas ? `<div class="info-row"><span>Notas</span><span>${escapeHtml(reserva.notas)}</span></div>` : ''}
       <div class="rp-actions">
         <button class="btn btn-ghost btn-block" id="btn-editar-reserva">Editar reserva</button>
@@ -2103,7 +2107,10 @@ function renderRightPanelReserva(mesaId, content){
         <div class="field"><label>Hora</label><input type="time" id="res-hora" value="20:00"></div>
       </div>
       <div class="field"><label>Personas</label><input type="number" id="res-personas" min="1" value="2"></div>
-      <div class="field"><label>Teléfono (opcional, para avisar por WhatsApp)</label><input type="tel" id="res-telefono" placeholder="Ej. 8091234567"></div>
+      <div class="grid-2">
+        <div class="field"><label>Teléfono (opcional)</label><input type="tel" id="res-telefono" placeholder="Ej. 8091234567"></div>
+        <div class="field"><label>Correo (para avisarle)</label><input type="email" id="res-email" placeholder="cliente@correo.com"></div>
+      </div>
       <div class="field"><label>Notas (opcional)</label><input type="text" id="res-notas" placeholder="Alergias, ocasión especial…"></div>
       <div class="rp-actions">
         <button class="btn btn-primary btn-block" id="btn-guardar-reserva">Confirmar reserva</button>
@@ -2122,14 +2129,15 @@ async function guardarEdicionReserva(reservaId){
   const hora = document.getElementById('res-hora').value;
   const personas = document.getElementById('res-personas').value;
   const telefono = document.getElementById('res-telefono').value.trim();
+  const email = document.getElementById('res-email').value.trim();
   const notas = document.getElementById('res-notas').value.trim();
   if(!cliente || !fecha || !hora || !personas){ toast('Completa nombre, fecha, hora y personas.'); return; }
   try{
-    await api('actualizarReserva', { reserva_id: reservaId, cliente, fecha, hora, personas, notas, telefono });
+    await api('actualizarReserva', { reserva_id: reservaId, cliente, fecha, hora, personas, notas, telefono, email });
     state.editandoReserva = null;
     if(fecha === state.fecha){
       const idx = state.reservas.findIndex(r=>r.id===reservaId);
-      if(idx>=0) state.reservas[idx] = Object.assign({}, state.reservas[idx], { cliente, fecha, hora, personas, notas, telefono });
+      if(idx>=0) state.reservas[idx] = Object.assign({}, state.reservas[idx], { cliente, fecha, hora, personas, notas, telefono, email });
       toast('Reserva actualizada');
       render();
     } else {
@@ -2147,6 +2155,7 @@ async function guardarReserva(){
   const hora = document.getElementById('res-hora').value;
   const personas = document.getElementById('res-personas').value;
   const telefono = document.getElementById('res-telefono').value.trim();
+  const email = document.getElementById('res-email').value.trim();
   const notas = document.getElementById('res-notas').value.trim();
   if(!cliente || !fecha || !hora || !personas){ toast('Completa nombre, fecha, hora y personas.'); return; }
   const grupo = grupoDe(state.mesaSeleccionada);
@@ -2154,11 +2163,11 @@ async function guardarReserva(){
   try{
     const data = await api('saveReserva', {
       restaurante_id: state.restauranteId, mesa_id: mesaIdField,
-      cliente, hora, personas, notas, fecha, telefono,
+      cliente, hora, personas, notas, fecha, telefono, email,
     });
     if(fecha === state.fecha){
-      state.reservas.push({ id:data.id, restaurante_id:state.restauranteId, mesa_id:mesaIdField, cliente, fecha, hora, personas, notas, telefono, estado:'activa' });
-      toast('Reserva creada' + (telefono ? ' · te avisaremos por WhatsApp al cliente' : ''));
+      state.reservas.push({ id:data.id, restaurante_id:state.restauranteId, mesa_id:mesaIdField, cliente, fecha, hora, personas, notas, telefono, email, estado:'activa' });
+      toast('Reserva creada' + (email ? ' · te avisaremos por correo al cliente' : ''));
       render();
     } else {
       toast('Reserva creada para el ' + formatFechaLegible(fecha) + '. Cambia la fecha arriba para verla.');
